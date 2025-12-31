@@ -33,6 +33,13 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev || true
 # Install Node.js dependencies
 RUN npm install || true
 
+# Create cache directories if they don't exist
+RUN mkdir -p /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/storage/framework/cache/data \
+    && mkdir -p /var/www/html/storage/logs
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
