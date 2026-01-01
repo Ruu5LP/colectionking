@@ -23,15 +23,24 @@ const DAMAGE_CONFIG = {
   HP_CORRECTION_EXPONENT: 0.10,
   HP_CORRECTION_MIN: 0.80,
   HP_CORRECTION_MAX: 1.25,
+  HP_MIN_DIVISOR: 1, // Defensive minimum to prevent division by zero
+  
+  // Random multiplier parameters (triangular distribution)
+  RANDOM_MIN: 0.7,
+  RANDOM_MAX: 1.3,
+  RANDOM_MODE: 1.0, // Peak of distribution (center-weighted)
   
   // Element advantage bonuses
   ELEMENT_BONUS_BIG: 1.5,
   ELEMENT_BONUS_SMALL: 1.3,
 };
 
-// Helper: Triangular distribution centered at 1.0
-// Returns a random number with peak at center (1.0)
-const triangularRandom = (min = 0.7, max = 1.3, mode = 1.0): number => {
+// Helper: Triangular distribution centered at mode
+// Returns a random number with peak at center (mode)
+const triangularRandom = (min: number, max: number, mode: number): number => {
+  // Prevent division by zero
+  if (min === max) return min;
+  
   const u = Math.random();
   const F = (mode - min) / (max - min);
   if (u < F) {
@@ -94,8 +103,8 @@ export const calculateDamage = (
   const defCapped = Math.min(defender.def, DAMAGE_CONFIG.STAT_INTERNAL_CAP);
   
   // Calculate HP ratio correction (mild)
-  // Note: Math.max(1, defenderHp) is defensive programming since HP should never be 0 during battle
-  const hpRatio = attackerHp / Math.max(1, defenderHp);
+  // Note: HP_MIN_DIVISOR is defensive programming since HP should never be 0 during battle
+  const hpRatio = attackerHp / Math.max(DAMAGE_CONFIG.HP_MIN_DIVISOR, defenderHp);
   const hpCorrection = clamp(
     Math.pow(hpRatio, DAMAGE_CONFIG.HP_CORRECTION_EXPONENT),
     DAMAGE_CONFIG.HP_CORRECTION_MIN,
@@ -103,7 +112,11 @@ export const calculateDamage = (
   );
   
   // Apply triangular random multiplier (centered at 1.0)
-  const randomMultiplier = triangularRandom(0.7, 1.3, 1.0);
+  const randomMultiplier = triangularRandom(
+    DAMAGE_CONFIG.RANDOM_MIN,
+    DAMAGE_CONFIG.RANDOM_MAX,
+    DAMAGE_CONFIG.RANDOM_MODE
+  );
   
   if (isSmallDamage) {
     // Small damage calculation (for draws)
