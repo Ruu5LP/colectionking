@@ -10,6 +10,24 @@ use Illuminate\Support\Facades\Validator;
 
 class DeckController extends Controller
 {
+    /**
+     * Format deck data for JSON response.
+     *
+     * @param Deck $deck
+     * @return array
+     */
+    private function formatDeckResponse(Deck $deck): array
+    {
+        return [
+            'id' => $deck->id,
+            'user_id' => $deck->user_id,
+            'leader_id' => $deck->leader_id,
+            'cards_json' => is_array($deck->cards_json) ? $deck->cards_json : [],
+            'created_at' => $deck->created_at,
+            'updated_at' => $deck->updated_at,
+        ];
+    }
+
     public function show($userId)
     {
         $deck = Deck::where('user_id', $userId)->first();
@@ -18,15 +36,7 @@ class DeckController extends Controller
             return response()->json(null);
         }
         
-        // Explicitly format the response to ensure cards_json is an array
-        return response()->json([
-            'id' => $deck->id,
-            'user_id' => $deck->user_id,
-            'leader_id' => $deck->leader_id,
-            'cards_json' => is_array($deck->cards_json) ? $deck->cards_json : [],
-            'created_at' => $deck->created_at,
-            'updated_at' => $deck->updated_at,
-        ]);
+        return response()->json($this->formatDeckResponse($deck));
     }
 
     public function store(Request $request, $userId)
@@ -70,14 +80,6 @@ class DeckController extends Controller
             ]
         );
 
-        // Explicitly format the response to ensure cards_json is an array
-        return response()->json([
-            'id' => $deck->id,
-            'user_id' => $deck->user_id,
-            'leader_id' => $deck->leader_id,
-            'cards_json' => is_array($deck->cards_json) ? $deck->cards_json : [],
-            'created_at' => $deck->created_at,
-            'updated_at' => $deck->updated_at,
-        ]);
+        return response()->json($this->formatDeckResponse($deck));
     }
 }
