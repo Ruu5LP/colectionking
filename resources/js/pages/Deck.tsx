@@ -4,6 +4,8 @@ import { Card, Deck as DeckType } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
 import CardGrid from '../components/CardGrid';
+import ElementBar from '../components/ElementBar';
+import RarityDisplay from '../components/RarityDisplay';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -140,8 +142,28 @@ const Deck: React.FC = () => {
             {leaderCard && (
               <div className="bg-white rounded-lg shadow p-4 mb-6">
                 <h3 className="text-lg font-semibold mb-3">選択中のリーダー</h3>
-                <div className="max-w-xs">
-                  <CardGrid cards={[leaderCard]} />
+                <div className="flex justify-start">
+                  <div className="w-full max-w-xs">
+                    <div className="border-2 rounded-lg p-4 transition-all bg-white border-blue-500 ring-4 ring-blue-500">
+                      <div className="text-sm font-bold mb-2 truncate" title={leaderCard.name}>
+                        {leaderCard.name}
+                      </div>
+                      
+                      <RarityDisplay rarity={leaderCard.rarity} className="mb-2" />
+                      
+                      <div className="flex items-center justify-between text-sm mb-3">
+                        <div className="text-left space-y-1">
+                          <div className="text-green-600">HP: {leaderCard.hp}</div>
+                          <div className="text-red-600">ATK: {leaderCard.atk}</div>
+                          <div className="text-blue-600">DEF: {leaderCard.def}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-2">
+                        <ElementBar elements={leaderCard.elements} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <button
                   onClick={() => {
