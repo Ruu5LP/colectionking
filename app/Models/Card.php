@@ -15,11 +15,13 @@ class Card extends Model
         'kind',
         'atk',
         'def',
+        'hp',
         'element',
     ];
 
     protected $casts = [
         'atk' => 'integer',
         'def' => 'integer',
+        'hp' => 'integer',
     ];
 }

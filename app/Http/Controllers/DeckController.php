@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Card;
 use App\Models\Deck;
-use App\Models\Leader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,7 +23,7 @@ class DeckController extends Controller
     public function store(Request $request, $userId)
     {
         $validator = Validator::make($request->all(), [
-            'leaderId' => 'required|string',
+            'leaderCardId' => 'required|string',
             'cards' => 'required|array|size:10',
             'cards.*' => 'required|string',
         ]);
@@ -35,11 +34,11 @@ class DeckController extends Controller
             ], 422);
         }
 
-        // Validate leader exists
-        $leader = Leader::find($request->leaderId);
-        if (!$leader) {
+        // Validate leader card exists
+        $leaderCard = Card::find($request->leaderCardId);
+        if (!$leaderCard) {
             return response()->json([
-                'errors' => ['leaderId' => ['The selected leader does not exist.']]
+                'errors' => ['leaderCardId' => ['The selected leader card does not exist.']]
             ], 422);
         }
 
@@ -57,7 +56,7 @@ class DeckController extends Controller
         $deck = Deck::updateOrCreate(
             ['user_id' => $userId],
             [
-                'leader_id' => $request->leaderId,
+                'leader_card_id' => $request->leaderCardId,
                 'cards_json' => $cardIds,
             ]
         );

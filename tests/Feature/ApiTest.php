@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Card;
 use App\Models\Deck;
-use App\Models\Leader;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
@@ -14,18 +13,6 @@ class ApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_get_leaders_returns_all_leaders(): void
-    {
-        // Create test leaders
-        Leader::create(['id' => Str::uuid()->toString(), 'name' => 'Test Leader 1', 'hp' => 1000]);
-        Leader::create(['id' => Str::uuid()->toString(), 'name' => 'Test Leader 2', 'hp' => 1200]);
-
-        $response = $this->get('/api/leaders');
-
-        $response->assertStatus(200);
-        $response->assertJsonCount(2);
-    }
-
     public function test_get_cards_returns_all_cards(): void
     {
         // Create test cards
@@ -33,18 +20,18 @@ class ApiTest extends TestCase
             'id' => Str::uuid()->toString(),
             'name' => 'Test Card 1',
             'kind' => 'NORMAL',
-            'hand' => 'ROCK',
             'atk' => 300,
             'def' => 200,
+            'hp' => 1000,
             'element' => null,
         ]);
         Card::create([
             'id' => Str::uuid()->toString(),
             'name' => 'Test Card 2',
             'kind' => 'SPECIAL',
-            'hand' => 'PAPER',
             'atk' => 500,
             'def' => 400,
+            'hp' => 1200,
             'element' => 'FIRE',
         ]);
 
@@ -64,8 +51,16 @@ class ApiTest extends TestCase
 
     public function test_get_deck_returns_deck_when_exists(): void
     {
-        $leaderId = Str::uuid()->toString();
-        Leader::create(['id' => $leaderId, 'name' => 'Test Leader', 'hp' => 1000]);
+        $leaderCardId = Str::uuid()->toString();
+        Card::create([
+            'id' => $leaderCardId,
+            'name' => 'Leader Card',
+            'kind' => 'SPECIAL',
+            'atk' => 500,
+            'def' => 400,
+            'hp' => 1000,
+            'element' => 'FIRE',
+        ]);
 
         $cardIds = [];
         for ($i = 0; $i < 10; $i++) {
@@ -74,9 +69,9 @@ class ApiTest extends TestCase
                 'id' => $cardId,
                 'name' => "Card {$i}",
                 'kind' => 'NORMAL',
-                'hand' => 'ROCK',
                 'atk' => 300,
                 'def' => 200,
+                'hp' => 800,
                 'element' => null,
             ]);
             $cardIds[] = $cardId;
@@ -84,7 +79,7 @@ class ApiTest extends TestCase
 
         Deck::create([
             'user_id' => 'user123',
-            'leader_id' => $leaderId,
+            'leader_card_id' => $leaderCardId,
             'cards_json' => $cardIds,
         ]);
 
@@ -94,7 +89,7 @@ class ApiTest extends TestCase
         $response->assertJsonStructure([
             'id',
             'user_id',
-            'leader_id',
+            'leader_card_id',
             'cards_json',
             'created_at',
             'updated_at',
@@ -103,8 +98,16 @@ class ApiTest extends TestCase
 
     public function test_post_deck_validates_10_cards_required(): void
     {
-        $leaderId = Str::uuid()->toString();
-        Leader::create(['id' => $leaderId, 'name' => 'Test Leader', 'hp' => 1000]);
+        $leaderCardId = Str::uuid()->toString();
+        Card::create([
+            'id' => $leaderCardId,
+            'name' => 'Leader Card',
+            'kind' => 'SPECIAL',
+            'atk' => 500,
+            'def' => 400,
+            'hp' => 1000,
+            'element' => 'FIRE',
+        ]);
 
         // Only 5 cards instead of 10
         $cardIds = [];
@@ -114,16 +117,16 @@ class ApiTest extends TestCase
                 'id' => $cardId,
                 'name' => "Card {$i}",
                 'kind' => 'NORMAL',
-                'hand' => 'ROCK',
                 'atk' => 300,
                 'def' => 200,
+                'hp' => 800,
                 'element' => null,
             ]);
             $cardIds[] = $cardId;
         }
 
         $response = $this->postJson('/api/decks/user123', [
-            'leaderId' => $leaderId,
+            'leaderCardId' => $leaderCardId,
             'cards' => $cardIds,
         ]);
 
@@ -131,7 +134,7 @@ class ApiTest extends TestCase
         $response->assertJsonValidationErrors(['cards']);
     }
 
-    public function test_post_deck_validates_leader_exists(): void
+    public function test_post_deck_validates_leader_card_exists(): void
     {
         $cardIds = [];
         for ($i = 0; $i < 10; $i++) {
@@ -140,31 +143,39 @@ class ApiTest extends TestCase
                 'id' => $cardId,
                 'name' => "Card {$i}",
                 'kind' => 'NORMAL',
-                'hand' => 'ROCK',
                 'atk' => 300,
                 'def' => 200,
+                'hp' => 800,
                 'element' => null,
             ]);
             $cardIds[] = $cardId;
         }
 
         $response = $this->postJson('/api/decks/user123', [
-            'leaderId' => 'non-existent-leader-id',
+            'leaderCardId' => 'non-existent-card-id',
             'cards' => $cardIds,
         ]);
 
         $response->assertStatus(422);
         $response->assertJson([
             'errors' => [
-                'leaderId' => ['The selected leader does not exist.']
+                'leaderCardId' => ['The selected leader card does not exist.']
             ]
         ]);
     }
 
     public function test_post_deck_validates_all_cards_exist(): void
     {
-        $leaderId = Str::uuid()->toString();
-        Leader::create(['id' => $leaderId, 'name' => 'Test Leader', 'hp' => 1000]);
+        $leaderCardId = Str::uuid()->toString();
+        Card::create([
+            'id' => $leaderCardId,
+            'name' => 'Leader Card',
+            'kind' => 'SPECIAL',
+            'atk' => 500,
+            'def' => 400,
+            'hp' => 1000,
+            'element' => 'FIRE',
+        ]);
 
         // Create only 5 real cards
         $cardIds = [];
@@ -174,9 +185,9 @@ class ApiTest extends TestCase
                 'id' => $cardId,
                 'name' => "Card {$i}",
                 'kind' => 'NORMAL',
-                'hand' => 'ROCK',
                 'atk' => 300,
                 'def' => 200,
+                'hp' => 800,
                 'element' => null,
             ]);
             $cardIds[] = $cardId;
@@ -188,7 +199,7 @@ class ApiTest extends TestCase
         }
 
         $response = $this->postJson('/api/decks/user123', [
-            'leaderId' => $leaderId,
+            'leaderCardId' => $leaderCardId,
             'cards' => $cardIds,
         ]);
 
@@ -202,8 +213,16 @@ class ApiTest extends TestCase
 
     public function test_post_deck_creates_new_deck(): void
     {
-        $leaderId = Str::uuid()->toString();
-        Leader::create(['id' => $leaderId, 'name' => 'Test Leader', 'hp' => 1000]);
+        $leaderCardId = Str::uuid()->toString();
+        Card::create([
+            'id' => $leaderCardId,
+            'name' => 'Leader Card',
+            'kind' => 'SPECIAL',
+            'atk' => 500,
+            'def' => 400,
+            'hp' => 1000,
+            'element' => 'FIRE',
+        ]);
 
         $cardIds = [];
         for ($i = 0; $i < 10; $i++) {
@@ -212,16 +231,16 @@ class ApiTest extends TestCase
                 'id' => $cardId,
                 'name' => "Card {$i}",
                 'kind' => 'NORMAL',
-                'hand' => 'ROCK',
                 'atk' => 300,
                 'def' => 200,
+                'hp' => 800,
                 'element' => null,
             ]);
             $cardIds[] = $cardId;
         }
 
         $response = $this->postJson('/api/decks/user123', [
-            'leaderId' => $leaderId,
+            'leaderCardId' => $leaderCardId,
             'cards' => $cardIds,
         ]);
 
@@ -229,7 +248,7 @@ class ApiTest extends TestCase
         $response->assertJsonStructure([
             'id',
             'user_id',
-            'leader_id',
+            'leader_card_id',
             'cards_json',
             'created_at',
             'updated_at',
@@ -237,16 +256,32 @@ class ApiTest extends TestCase
 
         $this->assertDatabaseHas('decks', [
             'user_id' => 'user123',
-            'leader_id' => $leaderId,
+            'leader_card_id' => $leaderCardId,
         ]);
     }
 
     public function test_post_deck_updates_existing_deck(): void
     {
-        $leaderId1 = Str::uuid()->toString();
-        $leaderId2 = Str::uuid()->toString();
-        Leader::create(['id' => $leaderId1, 'name' => 'Test Leader 1', 'hp' => 1000]);
-        Leader::create(['id' => $leaderId2, 'name' => 'Test Leader 2', 'hp' => 1200]);
+        $leaderCardId1 = Str::uuid()->toString();
+        $leaderCardId2 = Str::uuid()->toString();
+        Card::create([
+            'id' => $leaderCardId1,
+            'name' => 'Leader Card 1',
+            'kind' => 'SPECIAL',
+            'atk' => 500,
+            'def' => 400,
+            'hp' => 1000,
+            'element' => 'FIRE',
+        ]);
+        Card::create([
+            'id' => $leaderCardId2,
+            'name' => 'Leader Card 2',
+            'kind' => 'SPECIAL',
+            'atk' => 600,
+            'def' => 500,
+            'hp' => 1200,
+            'element' => 'WATER',
+        ]);
 
         $cardIds1 = [];
         $cardIds2 = [];
@@ -256,9 +291,9 @@ class ApiTest extends TestCase
                 'id' => $cardId,
                 'name' => "Card {$i}",
                 'kind' => 'NORMAL',
-                'hand' => 'ROCK',
                 'atk' => 300,
                 'def' => 200,
+                'hp' => 800,
                 'element' => null,
             ]);
             if ($i < 10) {
@@ -270,13 +305,13 @@ class ApiTest extends TestCase
 
         // Create initial deck
         $this->postJson('/api/decks/user123', [
-            'leaderId' => $leaderId1,
+            'leaderCardId' => $leaderCardId1,
             'cards' => $cardIds1,
         ]);
 
         // Update deck
         $response = $this->postJson('/api/decks/user123', [
-            'leaderId' => $leaderId2,
+            'leaderCardId' => $leaderCardId2,
             'cards' => $cardIds2,
         ]);
 
@@ -285,10 +320,10 @@ class ApiTest extends TestCase
         // Should still have only one deck for this user
         $this->assertEquals(1, Deck::where('user_id', 'user123')->count());
 
-        // But it should have the new leader
+        // But it should have the new leader card
         $this->assertDatabaseHas('decks', [
             'user_id' => 'user123',
-            'leader_id' => $leaderId2,
+            'leader_card_id' => $leaderCardId2,
         ]);
     }
 }

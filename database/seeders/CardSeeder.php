@@ -24,6 +24,7 @@ class CardSeeder extends Seeder
                 'kind' => 'NORMAL',
                 'atk' => rand(100, 500),
                 'def' => rand(100, 500),
+                'hp' => rand(700, 1200),
                 'element' => null,
             ]);
         }
@@ -36,6 +37,7 @@ class CardSeeder extends Seeder
                 'kind' => 'SPECIAL',
                 'atk' => rand(300, 800),
                 'def' => rand(300, 800),
+                'hp' => rand(800, 1500),
                 'element' => $elements[array_rand($elements)],
             ]);
         }

@@ -21,7 +21,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            LeaderSeeder::class,
             CardSeeder::class,
             DeckSeeder::class,
         ]);
