@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Hand } from '../types';
+import { HAND_ICONS, HAND_LABELS, HAND_STYLES, HAND_SELECTED_STYLES, formatHand } from '../shared/janken';
 
 interface BattleUIProps {
   playerHp: number;
@@ -50,13 +51,8 @@ const BattleUI: React.FC<BattleUIProps> = ({
   onNextTurn,
   onRestart,
 }) => {
-  const getHandIcon = (hand: string) => {
-    switch (hand) {
-      case 'ROCK': return '✊';
-      case 'SCISSORS': return '✌️';
-      case 'PAPER': return '✋';
-      default: return '';
-    }
+  const getHandIcon = (hand: Hand) => {
+    return HAND_ICONS[hand];
   };
 
   const getHpBarColor = (hp: number, maxHp: number) => {
@@ -266,13 +262,13 @@ const BattleUI: React.FC<BattleUIProps> = ({
                 className={`
                   border-4 rounded-lg p-6 cursor-pointer transition-all text-center
                   ${selectedHand === hand
-                    ? 'border-blue-500 bg-blue-50 ring-4 ring-blue-300 scale-105'
-                    : 'border-gray-300 bg-white hover:border-blue-300 hover:shadow-md'
+                    ? `${HAND_SELECTED_STYLES[hand]} scale-105`
+                    : `${HAND_STYLES[hand]} hover:shadow-md`
                   }
                 `}
               >
-                <div className="text-6xl mb-2">{getHandIcon(hand)}</div>
-                <div className="text-lg font-bold">{hand}</div>
+                <div className="text-6xl mb-2">{HAND_ICONS[hand]}</div>
+                <div className="text-lg font-bold">{HAND_LABELS[hand]}</div>
               </div>
             ))}
           </div>
