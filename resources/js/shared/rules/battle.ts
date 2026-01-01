@@ -15,25 +15,45 @@ export const compareHands = (hand1: Hand, hand2: Hand): 'WIN' | 'LOSE' | 'DRAW' 
   return 'LOSE';
 };
 
-// Element advantage: FIRE > WIND > WATER > FIRE
-export const hasElementAdvantage = (attacker: Card, defender: Card): boolean => {
-  if (!attacker.element || !defender.element) return false;
+// Element advantage: FIRE > WIND > WATER > FIRE (only for SPECIAL cards)
+export const getElementExtra = (attacker: Card, defender: Card): number => {
+  // NORMAL cards have no element advantage
+  if (attacker.kind !== 'SPECIAL' || defender.kind !== 'SPECIAL') {
+    return 0;
+  }
   
-  return (
+  // Both must have elements
+  if (!attacker.element || !defender.element) {
+    return 0;
+  }
+  
+  // Same element = 0
+  if (attacker.element === defender.element) {
+    return 0;
+  }
+  
+  // Check advantage: FIRE > WIND > WATER > FIRE
+  if (
     (attacker.element === 'FIRE' && defender.element === 'WIND') ||
     (attacker.element === 'WIND' && defender.element === 'WATER') ||
     (attacker.element === 'WATER' && defender.element === 'FIRE')
-  );
+  ) {
+    return 40; // Advantage
+  }
+  
+  return -40; // Disadvantage
 };
 
-// Calculate battle damage
-export const calculateDamage = (attacker: Card, defender: Card): number => {
-  let damage = Math.max(0, attacker.atk - defender.def);
+// Calculate battle damage with proper formula
+// damage = max(1, floor((atk - enemyDef*0.5 + bonus + extra) * rand))
+export const calculateDamage = (attacker: Card, defender: Card, bonus: number): number => {
+  const extra = getElementExtra(attacker, defender);
   
-  // Apply element advantage bonus (50% more damage)
-  if (hasElementAdvantage(attacker, defender)) {
-    damage = Math.floor(damage * 1.5);
-  }
+  // rand: 0.85 ~ 1.15
+  const rand = 0.85 + Math.random() * 0.3;
+  
+  const baseDamage = attacker.atk - defender.def * 0.5 + bonus + extra;
+  const damage = Math.max(1, Math.floor(baseDamage * rand));
   
   return damage;
 };
@@ -52,24 +72,42 @@ export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
   }
   
   if (handResult === 'WIN') {
-    const damage = calculateDamage(playerCard, cpuCard);
-    const elementBonus = hasElementAdvantage(playerCard, cpuCard) ? ' (属性有利!)' : '';
+    const bonus = 30; // Win bonus
+    const extra = getElementExtra(playerCard, cpuCard);
+    const damage = calculateDamage(playerCard, cpuCard, bonus);
+    
+    let elementInfo = '';
+    if (extra > 0) {
+      elementInfo = ' (属性有利!)';
+    } else if (extra < 0) {
+      elementInfo = ' (属性不利!)';
+    }
+    
     return {
       winner: 'PLAYER',
       playerDamage: 0,
       cpuDamage: damage,
-      message: `プレイヤーの勝利！ ${damage}ダメージを与えた${elementBonus}`,
+      message: `プレイヤーの勝利！ ${damage}ダメージを与えた${elementInfo}`,
     };
   }
   
   // handResult === 'LOSE'
-  const damage = calculateDamage(cpuCard, playerCard);
-  const elementBonus = hasElementAdvantage(cpuCard, playerCard) ? ' (属性有利!)' : '';
+  const bonus = -30; // Lose penalty
+  const extra = getElementExtra(cpuCard, playerCard);
+  const damage = calculateDamage(cpuCard, playerCard, bonus);
+  
+  let elementInfo = '';
+  if (extra > 0) {
+    elementInfo = ' (属性有利!)';
+  } else if (extra < 0) {
+    elementInfo = ' (属性不利!)';
+  }
+  
   return {
     winner: 'CPU',
     playerDamage: damage,
     cpuDamage: 0,
-    message: `CPUの勝利！ ${damage}ダメージを受けた${elementBonus}`,
+    message: `CPUの勝利！ ${damage}ダメージを受けた${elementInfo}`,
   };
 };
 

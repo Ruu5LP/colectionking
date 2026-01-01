@@ -63,8 +63,8 @@ const Battle: React.FC = () => {
         const playerDeck = shuffleDeck(playerCards);
         const cpuDeck = shuffleDeck(cpuCards);
         
-        const playerDrawResult = drawCards(playerDeck, 3);
-        const cpuDrawResult = drawCards(cpuDeck, 3);
+        const playerDrawResult = drawCards(playerDeck, 5);
+        const cpuDrawResult = drawCards(cpuDeck, 5);
 
         setBattleState({
           playerHp: playerLeaderData.hp,
@@ -135,6 +135,19 @@ const Battle: React.FC = () => {
       winner = 'PLAYER';
       phase = 'END';
       newLog.push('勝利！');
+    } else if (battleState.turn >= 10) {
+      // Maximum 10 turns - compare HP
+      phase = 'END';
+      if (newPlayerHp > newCpuHp) {
+        winner = 'PLAYER';
+        newLog.push('10ターン終了！ HPが高いプレイヤーの勝利！');
+      } else if (newCpuHp > newPlayerHp) {
+        winner = 'CPU';
+        newLog.push('10ターン終了！ HPが高いCPUの勝利！');
+      } else {
+        winner = 'DRAW';
+        newLog.push('10ターン終了！ HPが同じで引き分け！');
+      }
     }
 
     setBattleState({
@@ -173,9 +186,15 @@ const Battle: React.FC = () => {
       newCpuDeck = drawResult.remaining;
     }
 
-    // Check if battle should end (no cards left)
+    // Check if battle should end (no cards left in hand)
     if (newPlayerHand.length === 0 && newCpuHand.length === 0) {
-      const winner = battleState.playerHp > battleState.cpuHp ? 'PLAYER' : 'CPU';
+      let finalWinner: 'PLAYER' | 'CPU' | 'DRAW' = 'DRAW';
+      if (battleState.playerHp > battleState.cpuHp) {
+        finalWinner = 'PLAYER';
+      } else if (battleState.cpuHp > battleState.playerHp) {
+        finalWinner = 'CPU';
+      }
+      
       setBattleState({
         ...battleState,
         turn: newTurn,
@@ -186,8 +205,40 @@ const Battle: React.FC = () => {
         selectedCard: null,
         cpuSelectedCard: null,
         phase: 'END',
-        winner,
+        winner: finalWinner,
         battleLog: [...battleState.battleLog, 'カードが無くなりました！'],
+      });
+      return;
+    }
+    
+    // Check if turn limit reached (10 turns maximum)
+    if (newTurn > 10) {
+      let finalWinner: 'PLAYER' | 'CPU' | 'DRAW' = 'DRAW';
+      const newBattleLog = [...battleState.battleLog];
+      
+      if (battleState.playerHp > battleState.cpuHp) {
+        finalWinner = 'PLAYER';
+        newBattleLog.push('10ターン終了！ HPが高いプレイヤーの勝利！');
+      } else if (battleState.cpuHp > battleState.playerHp) {
+        finalWinner = 'CPU';
+        newBattleLog.push('10ターン終了！ HPが高いCPUの勝利！');
+      } else {
+        finalWinner = 'DRAW';
+        newBattleLog.push('10ターン終了！ HPが同じで引き分け！');
+      }
+      
+      setBattleState({
+        ...battleState,
+        turn: newTurn,
+        playerHand: newPlayerHand,
+        cpuHand: newCpuHand,
+        playerDeck: newPlayerDeck,
+        cpuDeck: newCpuDeck,
+        selectedCard: null,
+        cpuSelectedCard: null,
+        phase: 'END',
+        winner: finalWinner,
+        battleLog: newBattleLog,
       });
       return;
     }
