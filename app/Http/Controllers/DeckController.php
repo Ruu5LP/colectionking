@@ -15,7 +15,7 @@ class DeckController extends Controller
         $deck = Deck::where('user_id', $userId)->first();
         
         if (!$deck) {
-            return response()->json(null);
+            return response()->json((object)[]);
         }
         
         // Ensure cards_json is always an array
@@ -66,6 +66,10 @@ class DeckController extends Controller
             ]
         );
 
-        return response()->json($deck);
+        // Ensure cards_json is always an array in response
+        $response = $deck->toArray();
+        $response['cards_json'] = $response['cards_json'] ?? [];
+        
+        return response()->json($response);
     }
 }

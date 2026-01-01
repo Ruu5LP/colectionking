@@ -24,7 +24,7 @@ const Deck: React.FC = () => {
 
   // Load existing deck
   useEffect(() => {
-    if (existingDeck) {
+    if (existingDeck && existingDeck.user_id) { // Check if deck has user_id to ensure it's not an empty object
       setSelectedLeaderId(existingDeck.leader_id);
       setSelectedCardIds(Array.isArray(existingDeck.cards_json) ? existingDeck.cards_json : []);
     }
