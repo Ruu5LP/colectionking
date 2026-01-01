@@ -55,7 +55,7 @@ export const judgeBattle = (
       winner: 'DRAW',
       playerDamage,
       cpuDamage,
-      message: `引き分け！ 両者とも${playerHand}を出した。お互いに小ダメージ`,
+      message: `引き分け！ 両者とも${playerHand}を出した。プレイヤー${playerDamage}ダメージ、CPU${cpuDamage}ダメージ`,
     };
   }
   
