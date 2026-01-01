@@ -43,7 +43,7 @@ export interface BattleState {
   cpuSelectedCard: Card | null;
   battleLog: string[];
   phase: 'SELECT' | 'JUDGE' | 'END';
-  winner: 'PLAYER' | 'CPU' | null;
+  winner: 'PLAYER' | 'CPU' | 'DRAW' | null;
 }
 
 export interface JudgeResult {

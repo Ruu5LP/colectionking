@@ -15,6 +15,7 @@ const Battle: React.FC = () => {
   const [playerLeader, setPlayerLeader] = useState<Leader | null>(null);
   const [cpuLeader, setCpuLeader] = useState<Leader | null>(null);
   const [battleState, setBattleState] = useState<BattleState | null>(null);
+  const [battleKey, setBattleKey] = useState(0); // For forcing re-initialization
 
   // Initialize battle
   useEffect(() => {
@@ -89,7 +90,7 @@ const Battle: React.FC = () => {
     };
 
     initBattle();
-  }, [userId, navigate]);
+  }, [userId, navigate, battleKey]);
 
   const handleCardSelect = (card: Card) => {
     if (!battleState || battleState.phase !== 'SELECT') return;
@@ -119,11 +120,11 @@ const Battle: React.FC = () => {
     const newCpuHand = battleState.cpuHand.filter(c => c.id !== cpuCard.id);
 
     // Check for winner
-    let winner: 'PLAYER' | 'CPU' | null = null;
+    let winner: 'PLAYER' | 'CPU' | 'DRAW' | null = null;
     let phase: 'SELECT' | 'JUDGE' | 'END' = 'JUDGE';
     
     if (newPlayerHp <= 0 && newCpuHp <= 0) {
-      winner = 'DRAW' as any; // Handle draw
+      winner = 'DRAW';
       phase = 'END';
       newLog.push('引き分け！');
     } else if (newPlayerHp <= 0) {
@@ -205,8 +206,7 @@ const Battle: React.FC = () => {
   };
 
   const handleRestart = () => {
-    navigate('/battle');
-    window.location.reload();
+    setBattleKey(prev => prev + 1); // Increment key to trigger re-initialization
   };
 
   if (loading) {

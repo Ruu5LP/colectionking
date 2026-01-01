@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-const USER_ID_KEY = 'colectionking_user_id';
+const USER_ID_KEY = 'collectionking_user_id';
 
 export const useUserId = (): string => {
   const [userId, setUserId] = useState<string>(() => {

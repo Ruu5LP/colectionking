@@ -13,7 +13,7 @@ interface BattleUIProps {
   cpuSelectedCard: Card | null;
   battleLog: string[];
   phase: 'SELECT' | 'JUDGE' | 'END';
-  winner: 'PLAYER' | 'CPU' | null;
+  winner: 'PLAYER' | 'CPU' | 'DRAW' | null;
   onCardSelect: (card: Card) => void;
   onConfirm: () => void;
   onNextTurn: () => void;
@@ -197,8 +197,12 @@ const BattleUI: React.FC<BattleUIProps> = ({
         )}
         {phase === 'END' && winner && (
           <div>
-            <div className={`text-3xl font-bold text-center mb-4 ${winner === 'PLAYER' ? 'text-blue-600' : 'text-red-600'}`}>
-              {winner === 'PLAYER' ? '勝利！' : '敗北...'}
+            <div className={`text-3xl font-bold text-center mb-4 ${
+              winner === 'PLAYER' ? 'text-blue-600' : 
+              winner === 'CPU' ? 'text-red-600' : 
+              'text-gray-600'
+            }`}>
+              {winner === 'PLAYER' ? '勝利！' : winner === 'CPU' ? '敗北...' : '引き分け！'}
             </div>
             <button
               onClick={onRestart}
