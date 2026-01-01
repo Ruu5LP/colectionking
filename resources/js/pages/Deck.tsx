@@ -118,6 +118,7 @@ const Deck: React.FC = () => {
               <DeckSelector
                 availableCards={cards}
                 selectedCardIds={selectedCardIds}
+                selectedLeaderCardId={selectedLeaderCardId}
                 onCardSelect={handleCardSelect}
                 maxCards={MAX_CARDS}
               />
