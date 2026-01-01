@@ -22,9 +22,9 @@ class CardSeeder extends Seeder
                 'id' => Str::uuid()->toString(),
                 'name' => "Normal Card {$i}",
                 'kind' => 'NORMAL',
-                'atk' => rand(100, 500),
-                'def' => rand(100, 500),
-                'hp' => rand(700, 1200),
+                'atk' => rand(10, 50),
+                'def' => rand(10, 50),
+                'hp' => rand(100, 200),
                 'element' => null,
             ]);
         }
@@ -35,9 +35,9 @@ class CardSeeder extends Seeder
                 'id' => Str::uuid()->toString(),
                 'name' => "Special Card {$i}",
                 'kind' => 'SPECIAL',
-                'atk' => rand(300, 800),
-                'def' => rand(300, 800),
-                'hp' => rand(800, 1500),
+                'atk' => rand(30, 80),
+                'def' => rand(30, 80),
+                'hp' => rand(150, 300),
                 'element' => $elements[array_rand($elements)],
             ]);
         }
