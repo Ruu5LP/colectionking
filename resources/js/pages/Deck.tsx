@@ -9,11 +9,11 @@ import DeckSelector from '../components/DeckSelector';
 const Deck: React.FC = () => {
   const navigate = useNavigate();
   const userId = useUserId();
-  
+
   const { data: leaders, loading: leadersLoading } = useApi<Leader[]>('/api/leaders');
   const { data: cards, loading: cardsLoading } = useApi<Card[]>('/api/cards');
   const { data: existingDeck } = useApi<DeckType | null>(`/api/decks/${userId}`);
-  
+
   const [selectedLeaderId, setSelectedLeaderId] = useState<string | null>(null);
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -51,7 +51,7 @@ const Deck: React.FC = () => {
       setError('リーダーを選択してください');
       return;
     }
-    
+
     if (selectedCardIds.length !== MAX_CARDS) {
       setError(`カードを${MAX_CARDS}枚選択してください（現在: ${selectedCardIds.length}枚）`);
       return;
@@ -60,12 +60,12 @@ const Deck: React.FC = () => {
     try {
       setSaving(true);
       setError(null);
-      
+
       await apiPost(`/api/decks/${userId}`, {
         leaderId: selectedLeaderId,
         cards: selectedCardIds,
       });
-      
+
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
@@ -145,15 +145,15 @@ const Deck: React.FC = () => {
                 disabled={!canSave}
                 className={`
                   w-full py-3 px-6 rounded-lg font-bold text-white text-lg transition-colors
-                  ${canSave 
-                    ? 'bg-blue-500 hover:bg-blue-600 cursor-pointer' 
+                  ${canSave
+                    ? 'bg-blue-500 hover:bg-blue-600 cursor-pointer'
                     : 'bg-gray-300 cursor-not-allowed'
                   }
                 `}
               >
                 {saving ? '保存中...' : 'デッキを保存'}
               </button>
-              
+
               <div className="mt-4 text-center">
                 <button
                   onClick={() => navigate('/battle')}
