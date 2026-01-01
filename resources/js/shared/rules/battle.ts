@@ -3,13 +3,16 @@ import { Card, Hand, JudgeResult } from '../../types';
 // Triangular distribution random number generator
 // Returns a random number between min and max with peak at the center
 const triangularRandom = (min: number, max: number): number => {
+  // Handle edge case where min === max
+  if (min === max) return min;
+  
   const u = Math.random();
   const range = max - min;
   
   if (u < 0.5) {
-    return min + Math.sqrt(u * 0.5) * range;
+    return min + Math.sqrt(u * 2) * range * 0.5;
   } else {
-    return max - Math.sqrt((1 - u) * 0.5) * range;
+    return max - Math.sqrt((1 - u) * 2) * range * 0.5;
   }
 };
 
