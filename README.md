@@ -50,6 +50,17 @@ docker compose up -d
 docker compose exec app php artisan migrate
 ```
 
+5. Seed the database with initial data:
+```bash
+docker compose exec app php artisan db:seed
+```
+
+This will create:
+- 10 Leaders (HP: 700-1500)
+- 20 Normal cards
+- 10 Special cards (with elements)
+- 3 Sample decks for testing
+
 6. Access the application:
 - **Frontend**: http://localhost:8080
 - **API**: http://localhost:8080/api/*

@@ -32,8 +32,8 @@ services:
     container_name: colectionking-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: colectionking
-      MYSQL_USER: colectionking
+      MYSQL_DATABASE: collectionking
+      MYSQL_USER: collectionking
       MYSQL_PASSWORD: password
     ports:
       - "3306:3306"

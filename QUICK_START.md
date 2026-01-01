@@ -12,7 +12,11 @@ docker compose up -d
 # 3. Run database migrations
 docker compose exec app php artisan migrate
 
-# 4. Open your browser
+# 4. Seed the database with initial data
+docker compose exec app php artisan db:seed
+# Creates: 10 leaders, 30 cards (20 normal + 10 special), 3 sample decks
+
+# 5. Open your browser
 open http://localhost:8080
 ```
 

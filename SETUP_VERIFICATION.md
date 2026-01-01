@@ -109,7 +109,8 @@ docker compose exec nginx cat /etc/nginx/conf.d/default.conf
 3. Run `docker compose up -d`
 4. Generate app key: `docker compose exec app php artisan key:generate`
 5. Run migrations: `docker compose exec app php artisan migrate`
-6. Access http://localhost:8080
+6. Seed database: `docker compose exec app php artisan db:seed`
+7. Access http://localhost:8080
 
 ## Troubleshooting
 
