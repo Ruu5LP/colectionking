@@ -8,6 +8,16 @@ import { judgeBattle, shuffleDeck, drawCards } from '../shared/rules/battle';
 
 const MAX_TURNS = 10;
 
+// Helper function to determine winner by HP comparison
+const determineWinnerByHp = (playerHp: number, cpuHp: number): 'PLAYER' | 'CPU' | 'DRAW' => {
+  if (playerHp > cpuHp) {
+    return 'PLAYER';
+  } else if (cpuHp > playerHp) {
+    return 'CPU';
+  }
+  return 'DRAW';
+};
+
 const Battle: React.FC = () => {
   const navigate = useNavigate();
   const userId = useUserId();
@@ -177,12 +187,7 @@ const Battle: React.FC = () => {
 
     // Check if battle should end (no cards left in hand)
     if (newPlayerHand.length === 0 && newCpuHand.length === 0) {
-      let finalWinner: 'PLAYER' | 'CPU' | 'DRAW' = 'DRAW';
-      if (battleState.playerHp > battleState.cpuHp) {
-        finalWinner = 'PLAYER';
-      } else if (battleState.cpuHp > battleState.playerHp) {
-        finalWinner = 'CPU';
-      }
+      const finalWinner = determineWinnerByHp(battleState.playerHp, battleState.cpuHp);
       
       setBattleState({
         ...battleState,
@@ -202,17 +207,14 @@ const Battle: React.FC = () => {
     
     // Check if turn limit reached (10 turns maximum)
     if (newTurn > MAX_TURNS) {
-      let finalWinner: 'PLAYER' | 'CPU' | 'DRAW' = 'DRAW';
+      const finalWinner = determineWinnerByHp(battleState.playerHp, battleState.cpuHp);
       const newBattleLog = [...battleState.battleLog];
       
-      if (battleState.playerHp > battleState.cpuHp) {
-        finalWinner = 'PLAYER';
+      if (finalWinner === 'PLAYER') {
         newBattleLog.push('10ターン終了！ HPが高いプレイヤーの勝利！');
-      } else if (battleState.cpuHp > battleState.playerHp) {
-        finalWinner = 'CPU';
+      } else if (finalWinner === 'CPU') {
         newBattleLog.push('10ターン終了！ HPが高いCPUの勝利！');
       } else {
-        finalWinner = 'DRAW';
         newBattleLog.push('10ターン終了！ HPが同じで引き分け！');
       }
       

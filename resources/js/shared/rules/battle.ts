@@ -5,6 +5,7 @@ const WIN_BONUS = 30;
 const ELEMENT_ADVANTAGE = 40;
 const RAND_MIN = 0.85;
 const RAND_MAX = 1.15;
+const DEFENSE_MULTIPLIER = 0.5;
 
 // Hand comparison: ROCK > SCISSORS > PAPER > ROCK
 export const compareHands = (hand1: Hand, hand2: Hand): 'WIN' | 'LOSE' | 'DRAW' => {
@@ -58,7 +59,7 @@ export const calculateDamage = (attacker: Card, defender: Card, bonus: number): 
   // rand: 0.85 ~ 1.15
   const rand = RAND_MIN + Math.random() * (RAND_MAX - RAND_MIN);
   
-  const baseDamage = attacker.atk - defender.def * 0.5 + bonus + extra;
+  const baseDamage = attacker.atk - defender.def * DEFENSE_MULTIPLIER + bonus + extra;
   const damage = Math.max(1, Math.floor(baseDamage * rand));
   
   return damage;
