@@ -6,6 +6,8 @@ import { apiGet } from '../hooks/useApi';
 import BattleUI from '../components/BattleUI';
 import { judgeBattle, shuffleDeck, drawCards } from '../shared/rules/battle';
 
+const MAX_TURNS = 10;
+
 const Battle: React.FC = () => {
   const navigate = useNavigate();
   const userId = useUserId();
@@ -199,7 +201,7 @@ const Battle: React.FC = () => {
     }
     
     // Check if turn limit reached (10 turns maximum)
-    if (newTurn > 10) {
+    if (newTurn > MAX_TURNS) {
       let finalWinner: 'PLAYER' | 'CPU' | 'DRAW' = 'DRAW';
       const newBattleLog = [...battleState.battleLog];
       

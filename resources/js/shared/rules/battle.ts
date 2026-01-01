@@ -1,5 +1,11 @@
 import { Card, Hand, JudgeResult } from '../../types';
 
+// Constants
+const WIN_BONUS = 30;
+const ELEMENT_ADVANTAGE = 40;
+const RAND_MIN = 0.85;
+const RAND_MAX = 1.15;
+
 // Hand comparison: ROCK > SCISSORS > PAPER > ROCK
 export const compareHands = (hand1: Hand, hand2: Hand): 'WIN' | 'LOSE' | 'DRAW' => {
   if (hand1 === hand2) return 'DRAW';
@@ -38,10 +44,10 @@ export const getElementExtra = (attacker: Card, defender: Card): number => {
     (attacker.element === 'WIND' && defender.element === 'WATER') ||
     (attacker.element === 'WATER' && defender.element === 'FIRE')
   ) {
-    return 40; // Advantage
+    return ELEMENT_ADVANTAGE; // Advantage
   }
   
-  return -40; // Disadvantage
+  return -ELEMENT_ADVANTAGE; // Disadvantage
 };
 
 // Calculate battle damage with proper formula
@@ -50,7 +56,7 @@ export const calculateDamage = (attacker: Card, defender: Card, bonus: number): 
   const extra = getElementExtra(attacker, defender);
   
   // rand: 0.85 ~ 1.15
-  const rand = 0.85 + Math.random() * 0.3;
+  const rand = RAND_MIN + Math.random() * (RAND_MAX - RAND_MIN);
   
   const baseDamage = attacker.atk - defender.def * 0.5 + bonus + extra;
   const damage = Math.max(1, Math.floor(baseDamage * rand));
@@ -72,7 +78,7 @@ export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
   }
   
   if (handResult === 'WIN') {
-    const bonus = 30; // Win bonus
+    const bonus = WIN_BONUS;
     const extra = getElementExtra(playerCard, cpuCard);
     const damage = calculateDamage(playerCard, cpuCard, bonus);
     
@@ -92,7 +98,7 @@ export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
   }
   
   // handResult === 'LOSE'
-  const bonus = 30; // Win bonus for CPU
+  const bonus = WIN_BONUS; // Win bonus for CPU
   const extra = getElementExtra(cpuCard, playerCard);
   const damage = calculateDamage(cpuCard, playerCard, bonus); // CPU wins, gets win bonus
   
