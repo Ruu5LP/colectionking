@@ -67,40 +67,37 @@ const JankenWheel: React.FC<JankenWheelProps> = ({ value, onChange, disabled = f
       <div className="relative w-80 h-80 sm:w-[360px] sm:h-[360px]">
         {/* Background plate with rune pattern */}
         <div className="absolute inset-0 bg-gray-200 rounded-full shadow-inner flex items-center justify-center overflow-hidden">
-          {/* Magatama (勾玉) pattern - three comma-shaped jewels rotating in a circle */}
+          {/* Magatama (勾玉) pattern - three comma-shaped jewels extending to buttons */}
           <svg
-            className="absolute inset-0 w-full h-full opacity-25"
+            className="absolute inset-0 w-full h-full opacity-30"
             viewBox="0 0 200 200"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* Three magatama (comma jewels) in a circular pattern showing the win cycle */}
+            {/* Three magatama (comma jewels) extending outward to button positions */}
             <g fill="currentColor" stroke="none" className="text-gray-500">
-              {/* Sun magatama (top) - beats Star */}
+              {/* Sun magatama (top) - extending upward to Sun button */}
               <path 
-                d="M 100 50 C 100 50, 85 55, 80 65 C 75 75, 75 85, 80 90 C 85 95, 95 95, 100 90 C 105 85, 108 75, 100 60 C 95 50, 100 50, 100 50 Z" 
-                transform="rotate(-90 100 100)"
-                opacity="0.8"
+                d="M 100 100 C 95 100, 90 95, 88 88 C 86 82, 85 75, 88 68 C 90 63, 95 58, 100 55 C 108 50, 115 48, 120 52 C 125 56, 128 63, 128 70 C 128 78, 124 85, 118 90 C 112 95, 105 100, 100 100 Z" 
+                opacity="0.9"
               />
-              {/* Moon magatama (bottom-left) - beats Sun */}
+              {/* Moon magatama (bottom-left) - extending to Moon button */}
               <path 
-                d="M 100 50 C 100 50, 85 55, 80 65 C 75 75, 75 85, 80 90 C 85 95, 95 95, 100 90 C 105 85, 108 75, 100 60 C 95 50, 100 50, 100 50 Z" 
-                transform="rotate(150 100 100)"
-                opacity="0.8"
+                d="M 100 100 C 100 105, 95 110, 88 112 C 82 114, 75 115, 68 112 C 63 110, 58 105, 55 100 C 50 92, 48 85, 52 80 C 56 75, 63 72, 70 72 C 78 72, 85 76, 90 82 C 95 88, 100 95, 100 100 Z" 
+                opacity="0.9"
               />
-              {/* Star magatama (bottom-right) - beats Moon */}
+              {/* Star magatama (bottom-right) - extending to Star button */}
               <path 
-                d="M 100 50 C 100 50, 85 55, 80 65 C 75 75, 75 85, 80 90 C 85 95, 95 95, 100 90 C 105 85, 108 75, 100 60 C 95 50, 100 50, 100 50 Z" 
-                transform="rotate(30 100 100)"
-                opacity="0.8"
+                d="M 100 100 C 100 105, 105 110, 112 112 C 118 114, 125 115, 132 112 C 137 110, 142 105, 145 100 C 150 92, 152 85, 148 80 C 144 75, 137 72, 130 72 C 122 72, 115 76, 110 82 C 105 88, 100 95, 100 100 Z" 
+                opacity="0.9"
               />
               
               {/* Central circle connecting the three */}
-              <circle cx="100" cy="100" r="20" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.5" />
+              <circle cx="100" cy="100" r="18" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.6" />
               
-              {/* Small dots at the tail of each magatama to emphasize rotation */}
-              <circle cx="100" cy="50" r="3" transform="rotate(-90 100 100)" opacity="0.6" />
-              <circle cx="100" cy="50" r="3" transform="rotate(150 100 100)" opacity="0.6" />
-              <circle cx="100" cy="50" r="3" transform="rotate(30 100 100)" opacity="0.6" />
+              {/* Small decorative dots at the tips of each magatama */}
+              <circle cx="120" cy="52" r="4" opacity="0.7" />
+              <circle cx="52" cy="80" r="4" opacity="0.7" />
+              <circle cx="148" cy="80" r="4" opacity="0.7" />
             </g>
           </svg>
 
