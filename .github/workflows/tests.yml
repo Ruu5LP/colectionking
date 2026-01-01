@@ -43,5 +43,18 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      # ✅ 追加: Vite build して manifest.json を作る
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
       - name: Execute tests
         run: vendor/bin/phpunit
