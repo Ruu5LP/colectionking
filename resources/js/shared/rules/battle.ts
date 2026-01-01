@@ -59,7 +59,7 @@ export const calculateDamage = (attacker: Card, defender: Card, bonus: number): 
   // rand: 0.85 ~ 1.15
   const rand = RAND_MIN + Math.random() * (RAND_MAX - RAND_MIN);
   
-  const baseDamage = attacker.atk - defender.def * DEFENSE_MULTIPLIER + bonus + extra;
+  const baseDamage = attacker.atk - (defender.def * DEFENSE_MULTIPLIER) + bonus + extra;
   const damage = Math.max(1, Math.floor(baseDamage * rand));
   
   return damage;
