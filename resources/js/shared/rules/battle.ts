@@ -1,4 +1,5 @@
 import { Card, Hand, JudgeResult } from '../../types';
+import { formatHand } from '../janken';
 
 // Damage calculation constants
 const FIXED_BASE_DAMAGE = 80;
@@ -140,7 +141,7 @@ export const judgeBattle = (
       winner: 'DRAW',
       playerDamage,
       cpuDamage,
-      message: `引き分け！ 両者とも${playerHand}を出した。プレイヤー${playerDamage}ダメージ、CPU${cpuDamage}ダメージ`,
+      message: `引き分け！ 両者とも${formatHand(playerHand)}を出した。プレイヤー${playerDamage}ダメージ、CPU${cpuDamage}ダメージ`,
     };
   }
   
@@ -153,7 +154,7 @@ export const judgeBattle = (
       winner: 'PLAYER',
       playerDamage: 0,
       cpuDamage: damage,
-      message: `プレイヤーの勝利！ ${playerHand} > ${cpuHand} で${damage}ダメージを与えた${elementBonus}`,
+      message: `プレイヤーの勝利！ ${formatHand(playerHand)} > ${formatHand(cpuHand)} で${damage}ダメージを与えた${elementBonus}`,
     };
   }
   
@@ -166,7 +167,7 @@ export const judgeBattle = (
     winner: 'CPU',
     playerDamage: damage,
     cpuDamage: 0,
-    message: `CPUの勝利！ ${cpuHand} > ${playerHand} で${damage}ダメージを受けた${elementBonus}`,
+    message: `CPUの勝利！ ${formatHand(cpuHand)} > ${formatHand(playerHand)} で${damage}ダメージを受けた${elementBonus}`,
   };
 };
 
