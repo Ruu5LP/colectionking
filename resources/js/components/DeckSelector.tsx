@@ -57,15 +57,11 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
     
     // Apply element filter
     if (elementFilter !== 'ALL') {
-      if (elementFilter === null) {
-        cards = cards.filter(card => card.element === null);
-      } else {
-        cards = cards.filter(card => card.element === elementFilter);
-      }
+      cards = cards.filter(card => card.element === elementFilter);
     }
     
     // Apply sorting
-    cards = [...cards].sort((a, b) => {
+    cards.sort((a, b) => {
       let comparison = 0;
       
       switch (sortField) {
