@@ -31,7 +31,6 @@ class CardController extends Controller
             }
             
             $cardArray['elements'] = $elements;
-            unset($cardArray['elements_relation']); // Remove the raw relation data if present
             
             return $cardArray;
         });

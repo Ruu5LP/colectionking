@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cards', function (Blueprint $table) {
-            // Remove columns that are no longer needed
-            $table->dropColumn(['kind', 'element']);
+            // Remove columns that are no longer needed (with conditional checks)
+            if (Schema::hasColumn('cards', 'kind')) {
+                $table->dropColumn('kind');
+            }
+            if (Schema::hasColumn('cards', 'element')) {
+                $table->dropColumn('element');
+            }
             
             // Add new columns
             $table->tinyInteger('rarity')->after('def');

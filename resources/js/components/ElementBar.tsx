@@ -39,7 +39,7 @@ const ElementBar: React.FC<ElementBarProps> = ({ elements }) => {
         const percentage = cap > 0 ? (current / cap) * 100 : 0;
 
         // Only show bars where cap > 0
-        if (cap === 0 && current === 0) {
+        if (cap === 0) {
           return null;
         }
 

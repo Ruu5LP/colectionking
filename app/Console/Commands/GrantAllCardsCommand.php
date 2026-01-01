@@ -15,9 +15,7 @@ class GrantAllCardsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cards:grant-all 
-                            {--email= : The email of the user}
-                            {--id= : The ID of the user}';
+    protected $signature = 'cards:grant-all {--email= : The email of the user} {--id= : The ID of the user}';
 
     /**
      * The console command description.
