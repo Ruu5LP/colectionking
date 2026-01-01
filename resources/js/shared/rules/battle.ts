@@ -1,5 +1,34 @@
 import { Card, Hand, JudgeResult } from '../../types';
 
+// Damage calculation constants
+const DAMAGE_CONFIG = {
+  // Base damage values
+  BIG_DAMAGE_BASE: 230,
+  SMALL_DAMAGE_BASE: 20,
+  
+  // Stat difference scaling factors
+  BIG_DAMAGE_STAT_MULTIPLIER: 0.8,
+  SMALL_DAMAGE_STAT_MULTIPLIER: 0.1,
+  
+  // Soft cap parameters
+  BIG_DAMAGE_CAP: 520,
+  BIG_DAMAGE_SOFTNESS: 80,
+  SMALL_DAMAGE_CAP: 60,
+  SMALL_DAMAGE_SOFTNESS: 15,
+  
+  // Stat limits
+  STAT_INTERNAL_CAP: 700,
+  
+  // HP correction parameters
+  HP_CORRECTION_EXPONENT: 0.10,
+  HP_CORRECTION_MIN: 0.80,
+  HP_CORRECTION_MAX: 1.25,
+  
+  // Element advantage bonuses
+  ELEMENT_BONUS_BIG: 1.5,
+  ELEMENT_BONUS_SMALL: 1.3,
+};
+
 // Helper: Triangular distribution centered at 1.0
 // Returns a random number with peak at center (1.0)
 const triangularRandom = (min = 0.7, max = 1.3, mode = 1.0): number => {
@@ -61,52 +90,55 @@ export const calculateDamage = (
   isSmallDamage = false
 ): number => {
   // Apply internal upper limit to atk/def
-  const atkCapped = Math.min(attacker.atk, 700);
-  const defCapped = Math.min(defender.def, 700);
+  const atkCapped = Math.min(attacker.atk, DAMAGE_CONFIG.STAT_INTERNAL_CAP);
+  const defCapped = Math.min(defender.def, DAMAGE_CONFIG.STAT_INTERNAL_CAP);
   
   // Calculate HP ratio correction (mild)
+  // Note: Math.max(1, defenderHp) is defensive programming since HP should never be 0 during battle
   const hpRatio = attackerHp / Math.max(1, defenderHp);
-  const hpCorrection = clamp(Math.pow(hpRatio, 0.10), 0.80, 1.25);
+  const hpCorrection = clamp(
+    Math.pow(hpRatio, DAMAGE_CONFIG.HP_CORRECTION_EXPONENT),
+    DAMAGE_CONFIG.HP_CORRECTION_MIN,
+    DAMAGE_CONFIG.HP_CORRECTION_MAX
+  );
   
   // Apply triangular random multiplier (centered at 1.0)
   const randomMultiplier = triangularRandom(0.7, 1.3, 1.0);
   
   if (isSmallDamage) {
     // Small damage calculation (for draws)
-    // Base around 20, making median ~30 after multipliers
-    const base = 20;
-    const raw = (atkCapped - defCapped) * 0.1;
+    const base = DAMAGE_CONFIG.SMALL_DAMAGE_BASE;
+    const raw = (atkCapped - defCapped) * DAMAGE_CONFIG.SMALL_DAMAGE_STAT_MULTIPLIER;
     let damage = base + Math.max(0, raw);
     
     // Apply HP correction and randomness
     damage = damage * hpCorrection * randomMultiplier;
     
-    // Apply element advantage bonus (30% for small damage)
+    // Apply element advantage bonus
     if (hasElementAdvantage(attacker, defender)) {
-      damage = damage * 1.3;
+      damage = damage * DAMAGE_CONFIG.ELEMENT_BONUS_SMALL;
     }
     
-    // Soft cap to prevent extreme values (cap at 60, softness 15)
-    damage = softCap(damage, 60, 15);
+    // Soft cap to prevent extreme values
+    damage = softCap(damage, DAMAGE_CONFIG.SMALL_DAMAGE_CAP, DAMAGE_CONFIG.SMALL_DAMAGE_SOFTNESS);
     
     return Math.floor(damage);
   } else {
     // Big damage calculation (for wins)
-    // Base 230 to get median around 300 after multipliers
-    const base = 230;
-    const raw = (atkCapped - defCapped) * 0.8;
+    const base = DAMAGE_CONFIG.BIG_DAMAGE_BASE;
+    const raw = (atkCapped - defCapped) * DAMAGE_CONFIG.BIG_DAMAGE_STAT_MULTIPLIER;
     let damage = base + Math.max(0, raw);
     
     // Apply HP correction and randomness
     damage = damage * hpCorrection * randomMultiplier;
     
-    // Apply element advantage bonus (50% for big damage)
+    // Apply element advantage bonus
     if (hasElementAdvantage(attacker, defender)) {
-      damage = damage * 1.5;
+      damage = damage * DAMAGE_CONFIG.ELEMENT_BONUS_BIG;
     }
     
-    // Soft cap to prevent extreme upper values (cap at 520, softness 80)
-    damage = softCap(damage, 520, 80);
+    // Soft cap to prevent extreme upper values
+    damage = softCap(damage, DAMAGE_CONFIG.BIG_DAMAGE_CAP, DAMAGE_CONFIG.BIG_DAMAGE_SOFTNESS);
     
     return Math.floor(damage);
   }
