@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card, Deck as DeckType } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
-import UnifiedCardSelector from '../components/UnifiedCardSelector';
+import CardGrid from '../components/CardGrid';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ const Deck: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [mode, setMode] = useState<'leader' | 'deck'>('leader');
 
   const MAX_CARDS = 10;
 
@@ -25,16 +26,15 @@ const Deck: React.FC = () => {
     if (existingDeck) {
       setSelectedLeaderCardId(existingDeck.leader_card_id);
       setSelectedCardIds(Array.isArray(existingDeck.cards_json) ? existingDeck.cards_json : []);
+      if (existingDeck.leader_card_id) {
+        setMode('deck');
+      }
     }
   }, [existingDeck]);
 
   const handleLeaderSelect = (card: Card) => {
     setSelectedLeaderCardId(card.id);
-    setSuccess(false);
-  };
-  
-  const handleLeaderDeselect = () => {
-    setSelectedLeaderCardId(null);
+    setMode('deck');
     setSuccess(false);
   };
 
@@ -81,6 +81,9 @@ const Deck: React.FC = () => {
 
   const isLoading = cardsLoading;
   const canSave = selectedLeaderCardId && selectedCardIds.length === MAX_CARDS && !saving;
+  
+  const leaderCard = cards?.find(c => c.id === selectedLeaderCardId);
+  const selectedCards = cards?.filter(c => selectedCardIds.includes(c.id)) || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,16 +111,72 @@ const Deck: React.FC = () => {
 
         {!isLoading && cards && (
           <>
-            {/* Unified Card Selector */}
-            <UnifiedCardSelector
-              availableCards={cards}
-              selectedLeaderCardId={selectedLeaderCardId}
-              selectedCardIds={selectedCardIds}
-              onLeaderSelect={handleLeaderSelect}
-              onLeaderDeselect={handleLeaderDeselect}
-              onCardSelect={handleCardSelect}
-              maxCards={MAX_CARDS}
-            />
+            {/* Mode Selector */}
+            <div className="bg-white rounded-lg shadow p-4 mb-6">
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setMode('leader')}
+                  className={`px-4 py-2 rounded-lg font-semibold ${
+                    mode === 'leader' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  リーダー選択
+                </button>
+                <button
+                  onClick={() => setMode('deck')}
+                  disabled={!selectedLeaderCardId}
+                  className={`px-4 py-2 rounded-lg font-semibold ${
+                    mode === 'deck' && selectedLeaderCardId
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  デッキ選択 ({selectedCardIds.length}/{MAX_CARDS})
+                </button>
+              </div>
+            </div>
+
+            {/* Selected Leader Display */}
+            {leaderCard && (
+              <div className="bg-white rounded-lg shadow p-4 mb-6">
+                <h3 className="text-lg font-semibold mb-3">選択中のリーダー</h3>
+                <div className="max-w-xs">
+                  <CardGrid cards={[leaderCard]} />
+                </div>
+                <button
+                  onClick={() => {
+                    setSelectedLeaderCardId(null);
+                    setMode('leader');
+                  }}
+                  className="mt-3 text-red-500 hover:text-red-700 underline text-sm"
+                >
+                  リーダーを変更
+                </button>
+              </div>
+            )}
+
+            {/* Selected Deck Display */}
+            {mode === 'deck' && selectedCards.length > 0 && (
+              <div className="bg-white rounded-lg shadow p-4 mb-6">
+                <h3 className="text-lg font-semibold mb-3">
+                  選択中のカード ({selectedCards.length}/{MAX_CARDS})
+                </h3>
+                <CardGrid cards={selectedCards} />
+              </div>
+            )}
+
+            {/* Card Selection Area */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4">
+                {mode === 'leader' ? 'リーダーを選択' : 'デッキカードを選択'}
+              </h3>
+              <CardGrid
+                cards={cards}
+                selectedCards={mode === 'leader' ? (selectedLeaderCardId ? [selectedLeaderCardId] : []) : selectedCardIds}
+                onCardClick={mode === 'leader' ? handleLeaderSelect : handleCardSelect}
+                maxSelection={mode === 'leader' ? 1 : MAX_CARDS}
+              />
+            </div>
 
             {/* Error Message */}
             {error && (
