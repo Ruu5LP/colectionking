@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, Leader, Deck as DeckType } from '../types';
+import { Card, Deck as DeckType } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
 import LeaderSelector from '../components/LeaderSelector';
@@ -10,11 +10,10 @@ const Deck: React.FC = () => {
   const navigate = useNavigate();
   const userId = useUserId();
   
-  const { data: leaders, loading: leadersLoading } = useApi<Leader[]>('/api/leaders');
   const { data: cards, loading: cardsLoading } = useApi<Card[]>('/api/cards');
   const { data: existingDeck } = useApi<DeckType | null>(`/api/decks/${userId}`);
   
-  const [selectedLeaderId, setSelectedLeaderId] = useState<string | null>(null);
+  const [selectedLeaderCardId, setSelectedLeaderCardId] = useState<string | null>(null);
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,13 +24,13 @@ const Deck: React.FC = () => {
   // Load existing deck
   useEffect(() => {
     if (existingDeck) {
-      setSelectedLeaderId(existingDeck.leader_id);
+      setSelectedLeaderCardId(existingDeck.leader_card_id);
       setSelectedCardIds(Array.isArray(existingDeck.cards_json) ? existingDeck.cards_json : []);
     }
   }, [existingDeck]);
 
-  const handleLeaderSelect = (leader: Leader) => {
-    setSelectedLeaderId(leader.id);
+  const handleLeaderSelect = (card: Card) => {
+    setSelectedLeaderCardId(card.id);
     setSuccess(false);
   };
 
@@ -47,7 +46,7 @@ const Deck: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!selectedLeaderId) {
+    if (!selectedLeaderCardId) {
       setError('リーダーを選択してください');
       return;
     }
@@ -62,7 +61,7 @@ const Deck: React.FC = () => {
       setError(null);
       
       await apiPost(`/api/decks/${userId}`, {
-        leaderId: selectedLeaderId,
+        leaderCardId: selectedLeaderCardId,
         cards: selectedCardIds,
       });
       
@@ -76,8 +75,8 @@ const Deck: React.FC = () => {
     }
   };
 
-  const isLoading = leadersLoading || cardsLoading;
-  const canSave = selectedLeaderId && selectedCardIds.length === MAX_CARDS && !saving;
+  const isLoading = cardsLoading;
+  const canSave = selectedLeaderCardId && selectedCardIds.length === MAX_CARDS && !saving;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,13 +102,13 @@ const Deck: React.FC = () => {
           </div>
         )}
 
-        {!isLoading && leaders && cards && (
+        {!isLoading && cards && (
           <>
             {/* Leader Selection */}
             <div className="bg-white rounded-lg shadow p-6 mb-6">
               <LeaderSelector
-                leaders={leaders}
-                selectedLeaderId={selectedLeaderId}
+                cards={cards}
+                selectedLeaderCardId={selectedLeaderCardId}
                 onSelect={handleLeaderSelect}
               />
             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Leader, Deck as DeckType, BattleState } from '../types';
+import { Card, Deck as DeckType, BattleState } from '../types';
 import { useUserId } from '../hooks/useUserId';
 import { apiGet } from '../hooks/useApi';
 import BattleUI from '../components/BattleUI';
@@ -12,8 +12,8 @@ const Battle: React.FC = () => {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [playerLeader, setPlayerLeader] = useState<Leader | null>(null);
-  const [cpuLeader, setCpuLeader] = useState<Leader | null>(null);
+  const [playerLeaderCard, setPlayerLeaderCard] = useState<Card | null>(null);
+  const [cpuLeaderCard, setCpuLeaderCard] = useState<Card | null>(null);
   const [battleState, setBattleState] = useState<BattleState | null>(null);
   const [battleKey, setBattleKey] = useState(0); // For forcing re-initialization
 
@@ -30,19 +30,16 @@ const Battle: React.FC = () => {
           return;
         }
 
-        // Fetch all leaders and cards
-        const [leaders, allCards] = await Promise.all([
-          apiGet<Leader[]>('/api/leaders'),
-          apiGet<Card[]>('/api/cards'),
-        ]);
+        // Fetch all cards
+        const allCards = await apiGet<Card[]>('/api/cards');
 
-        // Get player leader
-        const playerLeaderData = leaders.find(l => l.id === deck.leader_id);
-        if (!playerLeaderData) {
-          setError('リーダーが見つかりません');
+        // Get player leader card
+        const playerLeaderCardData = allCards.find(c => c.id === deck.leader_card_id);
+        if (!playerLeaderCardData) {
+          setError('リーダーカードが見つかりません');
           return;
         }
-        setPlayerLeader(playerLeaderData);
+        setPlayerLeaderCard(playerLeaderCardData);
 
         // Get player cards
         const playerCards = allCards.filter(c => deck.cards_json.includes(c.id));
@@ -51,9 +48,9 @@ const Battle: React.FC = () => {
           return;
         }
 
-        // Setup CPU (random leader and cards)
-        const cpuLeaderData = leaders[Math.floor(Math.random() * leaders.length)];
-        setCpuLeader(cpuLeaderData);
+        // Setup CPU (random leader card and cards)
+        const cpuLeaderCardData = allCards[Math.floor(Math.random() * allCards.length)];
+        setCpuLeaderCard(cpuLeaderCardData);
 
         // Random CPU deck
         const shuffledCards = shuffleDeck(allCards);
@@ -67,8 +64,8 @@ const Battle: React.FC = () => {
         const cpuDrawResult = drawCards(cpuDeck, 3);
 
         setBattleState({
-          playerHp: playerLeaderData.hp,
-          cpuHp: cpuLeaderData.hp,
+          playerHp: playerLeaderCardData.hp,
+          cpuHp: cpuLeaderCardData.hp,
           turn: 1,
           playerHand: playerDrawResult.drawn,
           cpuHand: cpuDrawResult.drawn,
@@ -263,7 +260,7 @@ const Battle: React.FC = () => {
     );
   }
 
-  if (!battleState || !playerLeader || !cpuLeader) {
+  if (!battleState || !playerLeaderCard || !cpuLeaderCard) {
     return null;
   }
 
@@ -286,8 +283,8 @@ const Battle: React.FC = () => {
       <BattleUI
         playerHp={battleState.playerHp}
         cpuHp={battleState.cpuHp}
-        playerMaxHp={playerLeader.hp}
-        cpuMaxHp={cpuLeader.hp}
+        playerMaxHp={playerLeaderCard.hp}
+        cpuMaxHp={cpuLeaderCard.hp}
         turn={battleState.turn}
         playerHand={battleState.playerHand}
         cpuHandCount={battleState.cpuHand.length}

@@ -9,21 +9,15 @@ export interface Card {
   kind: CardKind;
   atk: number;
   def: number;
-  element: Element;
-}
-
-// Leader types
-export interface Leader {
-  id: string;
-  name: string;
   hp: number;
+  element: Element;
 }
 
 // Deck types
 export interface Deck {
   id?: number;
   user_id: string;
-  leader_id: string;
+  leader_card_id: string;
   cards_json: string[];
   created_at?: string;
   updated_at?: string;
