@@ -51,10 +51,6 @@ const BattleUI: React.FC<BattleUIProps> = ({
   onNextTurn,
   onRestart,
 }) => {
-  const getHandIcon = (hand: Hand) => {
-    return HAND_ICONS[hand];
-  };
-
   const getHpBarColor = (hp: number, maxHp: number) => {
     const percentage = (hp / maxHp) * 100;
     if (percentage > 50) return 'bg-green-500';
@@ -172,7 +168,7 @@ const BattleUI: React.FC<BattleUIProps> = ({
               <div className="bg-white border-4 border-blue-500 rounded-lg p-4 inline-block">
                 <div className="text-sm font-bold mb-2">{selectedCard.name}</div>
                 {selectedHand && phase === 'JUDGE' && (
-                  <div className="text-4xl mb-2">{getHandIcon(selectedHand)}</div>
+                  <div className="text-4xl mb-2">{HAND_ICONS[selectedHand]}</div>
                 )}
                 <div className="text-xs">
                   <div className="text-red-600">ATK: {selectedCard.atk}</div>
@@ -198,7 +194,7 @@ const BattleUI: React.FC<BattleUIProps> = ({
               <div className="bg-white border-4 border-red-500 rounded-lg p-4 inline-block">
                 <div className="text-sm font-bold mb-2">{cpuSelectedCard.name}</div>
                 {cpuSelectedHand && phase === 'JUDGE' && (
-                  <div className="text-4xl mb-2">{getHandIcon(cpuSelectedHand)}</div>
+                  <div className="text-4xl mb-2">{HAND_ICONS[cpuSelectedHand]}</div>
                 )}
                 <div className="text-xs">
                   <div className="text-red-600">ATK: {cpuSelectedCard.atk}</div>
