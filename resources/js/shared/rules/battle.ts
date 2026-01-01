@@ -31,14 +31,15 @@ const triangularRandom = (min: number, max: number): number => {
 };
 
 // Soft clamp function to prevent extreme values
+// Allows values to exceed limits but with diminishing returns
 const softClamp = (value: number, min: number, max: number, softness: number = 0.1): number => {
   if (value < min) {
     const diff = min - value;
-    return min - diff * softness;
+    return min - diff / (1 + diff * softness); // Asymptotically approaches min from below
   }
   if (value > max) {
     const diff = value - max;
-    return max + diff * softness;
+    return max + diff / (1 + diff * softness); // Asymptotically approaches infinity above max
   }
   return value;
 };
@@ -88,9 +89,14 @@ export const calculateDamage = (
   attackerHp: number,
   defenderHp: number
 ): number => {
-  // Apply soft clamp to atk/def to prevent extreme values
-  const effectiveAtk = softClamp(attacker.atk, 0, ATK_DEF_SOFT_CLAMP_LIMIT, ATK_DEF_SOFT_CLAMP_SOFTNESS);
-  const effectiveDef = softClamp(defender.def, 0, ATK_DEF_SOFT_CLAMP_LIMIT, ATK_DEF_SOFT_CLAMP_SOFTNESS);
+  // Apply soft upper limit to atk/def to prevent extreme values
+  // No lower limit needed as ATK/DEF are naturally non-negative from card data
+  const effectiveAtk = attacker.atk > ATK_DEF_SOFT_CLAMP_LIMIT 
+    ? softClamp(attacker.atk, 0, ATK_DEF_SOFT_CLAMP_LIMIT, ATK_DEF_SOFT_CLAMP_SOFTNESS)
+    : attacker.atk;
+  const effectiveDef = defender.def > ATK_DEF_SOFT_CLAMP_LIMIT
+    ? softClamp(defender.def, 0, ATK_DEF_SOFT_CLAMP_LIMIT, ATK_DEF_SOFT_CLAMP_SOFTNESS)
+    : defender.def;
   
   // Calculate base damage with triangular distribution
   // Use a fixed base plus the scaled difference
@@ -98,9 +104,7 @@ export const calculateDamage = (
   const scaledDamage = Math.max(0, baseDiff * ATK_DEF_MULTIPLIER);
   const minDamage = FIXED_BASE_DAMAGE + scaledDamage * MIN_DAMAGE_FACTOR;
   const maxDamage = FIXED_BASE_DAMAGE + scaledDamage * MAX_DAMAGE_FACTOR;
-  // Ensure proper min/max ordering (should always be correct since MIN_DAMAGE_FACTOR < MAX_DAMAGE_FACTOR)
-  // but defensive programming in case of future changes
-  let damage = triangularRandom(Math.min(minDamage, maxDamage), Math.max(minDamage, maxDamage));
+  let damage = triangularRandom(minDamage, maxDamage);
   
   // Apply element advantage bonus (50% more damage)
   if (hasElementAdvantage(attacker, defender)) {
