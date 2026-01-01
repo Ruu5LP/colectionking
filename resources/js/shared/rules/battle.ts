@@ -4,7 +4,6 @@ import { Card, Hand, JudgeResult } from '../../types';
 // Returns a random number between min and max with peak at the center
 const triangularRandom = (min: number, max: number): number => {
   const u = Math.random();
-  const center = (min + max) / 2;
   const range = max - min;
   
   if (u < 0.5) {
