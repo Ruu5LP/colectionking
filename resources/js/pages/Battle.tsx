@@ -49,7 +49,7 @@ const Battle: React.FC = () => {
         ]);
 
         // Get player leader
-        const playerLeaderData = leaders.find(l => l.id === deck.leader_id);
+        const playerLeaderData = leaders.find(l => String(l.id) === String(deck.leader_id));
         if (!playerLeaderData) {
           setError('リーダーが見つかりません');
           setLoading(false);
