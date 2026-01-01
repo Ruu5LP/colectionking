@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, Deck as DeckType } from '../types';
+import { Card, Deck as DeckType, CardKind, Element } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
 import LeaderSelector from '../components/LeaderSelector';
 import DeckSelector from '../components/DeckSelector';
+
+type SortField = 'hp' | 'atk' | 'def' | 'name' | 'kind';
+type SortOrder = 'asc' | 'desc';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +21,13 @@ const Deck: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  
+  // Shared filter and sort state for both leader and deck selectors
+  const [searchTerm, setSearchTerm] = useState('');
+  const [kindFilter, setKindFilter] = useState<CardKind | 'ALL'>('ALL');
+  const [elementFilter, setElementFilter] = useState<Element | 'ALL'>('ALL');
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const MAX_CARDS = 10;
 
@@ -110,6 +120,11 @@ const Deck: React.FC = () => {
                 cards={cards}
                 selectedLeaderCardId={selectedLeaderCardId}
                 onSelect={handleLeaderSelect}
+                searchTerm={searchTerm}
+                kindFilter={kindFilter}
+                elementFilter={elementFilter}
+                sortField={sortField}
+                sortOrder={sortOrder}
               />
             </div>
 
@@ -121,6 +136,16 @@ const Deck: React.FC = () => {
                 selectedLeaderCardId={selectedLeaderCardId}
                 onCardSelect={handleCardSelect}
                 maxCards={MAX_CARDS}
+                searchTerm={searchTerm}
+                kindFilter={kindFilter}
+                elementFilter={elementFilter}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSearchChange={setSearchTerm}
+                onKindFilterChange={setKindFilter}
+                onElementFilterChange={setElementFilter}
+                onSortFieldChange={setSortField}
+                onSortOrderChange={setSortOrder}
               />
             </div>
 

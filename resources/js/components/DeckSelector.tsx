@@ -8,10 +8,17 @@ interface DeckSelectorProps {
   selectedLeaderCardId?: string | null;
   onCardSelect: (card: Card) => void;
   maxCards: number;
+  searchTerm: string;
+  kindFilter: CardKind | 'ALL';
+  elementFilter: Element | 'ALL';
+  sortField: 'hp' | 'atk' | 'def' | 'name' | 'kind';
+  sortOrder: 'asc' | 'desc';
+  onSearchChange: (value: string) => void;
+  onKindFilterChange: (value: CardKind | 'ALL') => void;
+  onElementFilterChange: (value: Element | 'ALL') => void;
+  onSortFieldChange: (value: 'hp' | 'atk' | 'def' | 'name' | 'kind') => void;
+  onSortOrderChange: (value: 'asc' | 'desc') => void;
 }
-
-type SortField = 'hp' | 'atk' | 'def' | 'name' | 'kind';
-type SortOrder = 'asc' | 'desc';
 
 const DeckSelector: React.FC<DeckSelectorProps> = ({
   availableCards,
@@ -19,19 +26,22 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
   selectedLeaderCardId = null,
   onCardSelect,
   maxCards,
+  searchTerm,
+  kindFilter,
+  elementFilter,
+  sortField,
+  sortOrder,
+  onSearchChange,
+  onKindFilterChange,
+  onElementFilterChange,
+  onSortFieldChange,
+  onSortOrderChange,
 }) => {
   const selectedCards = availableCards.filter(card => selectedCardIds.includes(card.id));
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 15; // 5 columns × 3 rows
-  
-  // Filter and sort state
-  const [searchTerm, setSearchTerm] = useState('');
-  const [kindFilter, setKindFilter] = useState<CardKind | 'ALL'>('ALL');
-  const [elementFilter, setElementFilter] = useState<Element | 'ALL'>('ALL');
-  const [sortField, setSortField] = useState<SortField>('name');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   
   // Reset page to 1 when filters/search/sort change
   useEffect(() => {
@@ -103,7 +113,7 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
   };
   
   const toggleSortOrder = () => {
-    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+    onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc');
   };
   
   return (
@@ -183,7 +193,7 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
             <input
               type="text"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => onSearchChange(e.target.value)}
               placeholder="カード名を入力..."
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
@@ -197,7 +207,7 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
               </label>
               <select
                 value={kindFilter}
-                onChange={(e) => setKindFilter(e.target.value as CardKind | 'ALL')}
+                onChange={(e) => onKindFilterChange(e.target.value as CardKind | 'ALL')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="ALL">すべて</option>
@@ -215,7 +225,7 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
                 value={elementFilter === null ? 'NULL' : elementFilter}
                 onChange={(e) => {
                   const value = e.target.value;
-                  setElementFilter(value === 'ALL' ? 'ALL' : value === 'NULL' ? null : value as Element);
+                  onElementFilterChange(value === 'ALL' ? 'ALL' : value === 'NULL' ? null : value as Element);
                 }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
@@ -235,7 +245,7 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
               <div className="flex gap-2">
                 <select
                   value={sortField}
-                  onChange={(e) => setSortField(e.target.value as SortField)}
+                  onChange={(e) => onSortFieldChange(e.target.value as 'hp' | 'atk' | 'def' | 'name' | 'kind')}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="name">名前</option>
