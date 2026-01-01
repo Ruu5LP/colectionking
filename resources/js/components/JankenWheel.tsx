@@ -46,9 +46,9 @@ const JankenWheel: React.FC<JankenWheelProps> = ({ value, onChange, disabled = f
       jankenHand: 'STAR' as JankenHand,
       icon: '⭐',
       label: '星',
-      bgColor: 'bg-green-50',
-      ringColor: 'ring-green-300',
-      textColor: 'text-green-700',
+      bgColor: 'bg-emerald-50',
+      ringColor: 'ring-emerald-300',
+      textColor: 'text-emerald-700',
       position: 'bottom-4 left-4', // Bottom left
     },
     {
@@ -92,7 +92,7 @@ const JankenWheel: React.FC<JankenWheelProps> = ({ value, onChange, disabled = f
           </svg>
 
           {/* Central small circle */}
-          <div className="absolute w-12 h-12 bg-gray-300 rounded-full shadow-inner" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-gray-300 rounded-full shadow-inner" />
         </div>
 
         {/* Three hand buttons positioned in triangle */}
