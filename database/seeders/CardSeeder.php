@@ -14,7 +14,6 @@ class CardSeeder extends Seeder
      */
     public function run(): void
     {
-        $hands = ['ROCK', 'SCISSORS', 'PAPER'];
         $elements = ['FIRE', 'WIND', 'WATER'];
 
         // Create 20 NORMAL cards
@@ -23,7 +22,6 @@ class CardSeeder extends Seeder
                 'id' => Str::uuid()->toString(),
                 'name' => "Normal Card {$i}",
                 'kind' => 'NORMAL',
-                'hand' => $hands[array_rand($hands)],
                 'atk' => rand(100, 500),
                 'def' => rand(100, 500),
                 'element' => null,
@@ -36,7 +34,6 @@ class CardSeeder extends Seeder
                 'id' => Str::uuid()->toString(),
                 'name' => "Special Card {$i}",
                 'kind' => 'SPECIAL',
-                'hand' => $hands[array_rand($hands)],
                 'atk' => rand(300, 800),
                 'def' => rand(300, 800),
                 'element' => $elements[array_rand($elements)],

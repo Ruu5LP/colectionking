@@ -21,15 +21,6 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
     }
   };
 
-  const getHandIcon = (hand: string) => {
-    switch (hand) {
-      case 'ROCK': return '✊';
-      case 'SCISSORS': return '✌️';
-      case 'PAPER': return '✋';
-      default: return '';
-    }
-  };
-
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {cards.map((card) => {
@@ -56,8 +47,7 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-2xl">{getHandIcon(card.hand)}</span>
-              <div className="text-right">
+              <div className="text-left">
                 <div className="text-red-600">ATK: {card.atk}</div>
                 <div className="text-blue-600">DEF: {card.def}</div>
               </div>
