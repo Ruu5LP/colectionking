@@ -120,8 +120,12 @@ const Battle: React.FC = () => {
   const handleConfirmHand = () => {
     if (!battleState || !battleState.selectedCard || !battleState.selectedHand || battleState.phase !== 'SELECT_HAND') return;
 
-    // CPU selects random hand (card was already selected in handleConfirmCard)
-    const cpuCard = battleState.cpuSelectedCard!; // Already set in SELECT_HAND phase
+    // CPU card should already be selected in SELECT_HAND phase
+    const cpuCard = battleState.cpuSelectedCard;
+    if (!cpuCard) {
+      console.error('CPU card not selected');
+      return;
+    }
     const cpuHand = ['ROCK', 'SCISSORS', 'PAPER'][Math.floor(Math.random() * 3)] as 'ROCK' | 'SCISSORS' | 'PAPER';
     
     // Judge battle

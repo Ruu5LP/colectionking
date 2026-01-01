@@ -217,7 +217,7 @@ const BattleUI: React.FC<BattleUIProps> = ({
               </div>
             ) : (
               <div className="text-gray-400 text-lg">
-                {phase === 'SELECT_CARD' ? '考え中...' : ''}
+                {phase === 'SELECT_CARD' && '考え中...'}
               </div>
             )}
           </div>
