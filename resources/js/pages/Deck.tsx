@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card, Deck as DeckType } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
-import LeaderSelector from '../components/LeaderSelector';
-import DeckSelector from '../components/DeckSelector';
+import UnifiedCardSelector from '../components/UnifiedCardSelector';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -31,6 +30,11 @@ const Deck: React.FC = () => {
 
   const handleLeaderSelect = (card: Card) => {
     setSelectedLeaderCardId(card.id);
+    setSuccess(false);
+  };
+  
+  const handleLeaderDeselect = () => {
+    setSelectedLeaderCardId(null);
     setSuccess(false);
   };
 
@@ -104,24 +108,16 @@ const Deck: React.FC = () => {
 
         {!isLoading && cards && (
           <>
-            {/* Leader Selection */}
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <LeaderSelector
-                cards={cards}
-                selectedLeaderCardId={selectedLeaderCardId}
-                onSelect={handleLeaderSelect}
-              />
-            </div>
-
-            {/* Card Selection */}
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <DeckSelector
-                availableCards={cards}
-                selectedCardIds={selectedCardIds}
-                onCardSelect={handleCardSelect}
-                maxCards={MAX_CARDS}
-              />
-            </div>
+            {/* Unified Card Selector */}
+            <UnifiedCardSelector
+              availableCards={cards}
+              selectedLeaderCardId={selectedLeaderCardId}
+              selectedCardIds={selectedCardIds}
+              onLeaderSelect={handleLeaderSelect}
+              onLeaderDeselect={handleLeaderDeselect}
+              onCardSelect={handleCardSelect}
+              maxCards={MAX_CARDS}
+            />
 
             {/* Error Message */}
             {error && (
