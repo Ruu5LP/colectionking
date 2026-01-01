@@ -1,25 +1,22 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardKind, Element } from '../types';
+import { Card } from '../types';
 import { useApi } from '../hooks/useApi';
 import CardGrid from '../components/CardGrid';
-import CardFilterPanel from '../components/CardFilterPanel';
 
 const Collection: React.FC = () => {
   const { data: cards, loading, error } = useApi<Card[]>('/api/cards');
   
-  const [kindFilter, setKindFilter] = useState<CardKind | 'ALL'>('ALL');
-  const [elementFilter, setElementFilter] = useState<Element | 'ALL'>('ALL');
+  const [rarityFilter, setRarityFilter] = useState<number | 'ALL'>('ALL');
 
   const filteredCards = useMemo(() => {
     if (!cards) return [];
     
     return cards.filter(card => {
-      if (kindFilter !== 'ALL' && card.kind !== kindFilter) return false;
-      if (elementFilter !== 'ALL' && card.element !== elementFilter) return false;
+      if (rarityFilter !== 'ALL' && card.rarity !== rarityFilter) return false;
       return true;
     });
-  }, [cards, kindFilter, elementFilter]);
+  }, [cards, rarityFilter]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -53,15 +50,23 @@ const Collection: React.FC = () => {
 
         {!loading && !error && cards && (
           <>
-            <CardFilterPanel
-              kindFilter={kindFilter}
-              elementFilter={elementFilter}
-              onKindChange={setKindFilter}
-              onElementChange={setElementFilter}
-            />
-
-            <div className="mb-4 text-gray-600">
-              {filteredCards.length}枚のカード
+            <div className="mb-4 flex items-center gap-4">
+              <div className="text-gray-600">
+                {filteredCards.length}枚のカード
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-600">レアリティ:</label>
+                <select 
+                  value={rarityFilter} 
+                  onChange={(e) => setRarityFilter(e.target.value === 'ALL' ? 'ALL' : parseInt(e.target.value))}
+                  className="px-3 py-1 border border-gray-300 rounded-lg"
+                >
+                  <option value="ALL">すべて</option>
+                  {[1, 2, 3, 4, 5, 6].map(r => (
+                    <option key={r} value={r}>★{r}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {filteredCards.length > 0 ? (

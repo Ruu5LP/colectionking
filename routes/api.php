@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
+use App\Http\Controllers\UserCardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,3 +34,8 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/cards', [CardController::class, 'index']);
 Route::get('/decks/{userId}', [DeckController::class, 'show']);
 Route::post('/decks/{userId}', [DeckController::class, 'store']);
+
+// Protected user card routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user/cards', [UserCardController::class, 'index']);
+});

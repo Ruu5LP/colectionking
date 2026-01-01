@@ -1,0 +1,172 @@
+[
+  {
+    "id": "C001",
+    "name": "火炎の剣士",
+    "hp": 1200,
+    "atk": 320,
+    "def": 180,
+    "rarity": 3,
+    "description": "炎を纏う伝説の剣士",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":10,"cap":60},
+      {"element":"water","base":0,"cap":10},
+      {"element":"wind","base":5,"cap":30},
+      {"element":"earth","base":0,"cap":5},
+      {"element":"mech","base":0,"cap":20}
+    ]
+  },
+  {
+    "id": "C002",
+    "name": "水流の魔道士",
+    "hp": 1000,
+    "atk": 280,
+    "def": 200,
+    "rarity": 3,
+    "description": "水を操る神秘の魔術師",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":0,"cap":10},
+      {"element":"water","base":15,"cap":70},
+      {"element":"wind","base":3,"cap":25},
+      {"element":"earth","base":0,"cap":15},
+      {"element":"mech","base":0,"cap":10}
+    ]
+  },
+  {
+    "id": "C003",
+    "name": "風の疾走者",
+    "hp": 900,
+    "atk": 350,
+    "def": 150,
+    "rarity": 2,
+    "description": "風のように素早く動く戦士",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":2,"cap":20},
+      {"element":"water","base":0,"cap":15},
+      {"element":"wind","base":12,"cap":65},
+      {"element":"earth","base":0,"cap":10},
+      {"element":"mech","base":0,"cap":15}
+    ]
+  },
+  {
+    "id": "C004",
+    "name": "大地の守護者",
+    "hp": 1500,
+    "atk": 250,
+    "def": 300,
+    "rarity": 4,
+    "description": "大地と共に戦う堅牢な盾",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":0,"cap":15},
+      {"element":"water","base":5,"cap":30},
+      {"element":"wind","base":0,"cap":10},
+      {"element":"earth","base":18,"cap":75},
+      {"element":"mech","base":0,"cap":20}
+    ]
+  },
+  {
+    "id": "C005",
+    "name": "機械兵士α",
+    "hp": 1100,
+    "atk": 300,
+    "def": 220,
+    "rarity": 2,
+    "description": "高度な技術で作られた戦闘機械",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":0,"cap":20},
+      {"element":"water","base":0,"cap":15},
+      {"element":"wind","base":3,"cap":25},
+      {"element":"earth","base":0,"cap":10},
+      {"element":"mech","base":15,"cap":70}
+    ]
+  },
+  {
+    "id": "C006",
+    "name": "灼熱の竜",
+    "hp": 1800,
+    "atk": 400,
+    "def": 200,
+    "rarity": 5,
+    "description": "全てを焼き尽くす炎の竜",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":25,"cap":90},
+      {"element":"water","base":0,"cap":5},
+      {"element":"wind","base":8,"cap":40},
+      {"element":"earth","base":0,"cap":10},
+      {"element":"mech","base":0,"cap":15}
+    ]
+  },
+  {
+    "id": "C007",
+    "name": "氷結の女王",
+    "hp": 1400,
+    "atk": 320,
+    "def": 250,
+    "rarity": 4,
+    "description": "氷と水を自在に操る女王",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":0,"cap":10},
+      {"element":"water","base":20,"cap":80},
+      {"element":"wind","base":5,"cap":35},
+      {"element":"earth","base":3,"cap":25},
+      {"element":"mech","base":0,"cap":15}
+    ]
+  },
+  {
+    "id": "C008",
+    "name": "旋風の忍者",
+    "hp": 800,
+    "atk": 380,
+    "def": 120,
+    "rarity": 3,
+    "description": "風と共に現れ消える影",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":5,"cap":30},
+      {"element":"water","base":0,"cap":15},
+      {"element":"wind","base":18,"cap":75},
+      {"element":"earth","base":0,"cap":10},
+      {"element":"mech","base":2,"cap":20}
+    ]
+  },
+  {
+    "id": "C009",
+    "name": "岩石巨人",
+    "hp": 2000,
+    "atk": 280,
+    "def": 350,
+    "rarity": 5,
+    "description": "山のように巨大で頑丈な存在",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":0,"cap":15},
+      {"element":"water","base":8,"cap":40},
+      {"element":"wind","base":0,"cap":10},
+      {"element":"earth","base":30,"cap":95},
+      {"element":"mech","base":0,"cap":20}
+    ]
+  },
+  {
+    "id": "C010",
+    "name": "メカドラゴン",
+    "hp": 1600,
+    "atk": 380,
+    "def": 240,
+    "rarity": 6,
+    "description": "最先端技術が生み出した機械竜",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":10,"cap":50},
+      {"element":"water","base":5,"cap":30},
+      {"element":"wind","base":10,"cap":45},
+      {"element":"earth","base":5,"cap":30},
+      {"element":"mech","base":35,"cap":100}
+    ]
+  }
+]
