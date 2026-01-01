@@ -100,8 +100,15 @@ const Battle: React.FC = () => {
   const handleConfirmCard = () => {
     if (!battleState || !battleState.selectedCard || battleState.phase !== 'SELECT_CARD') return;
     
-    // Move to hand selection phase
-    setBattleState(prev => prev ? { ...prev, phase: 'SELECT_HAND' } : null);
+    // CPU selects its card when player confirms their card
+    const cpuCard = battleState.cpuHand[Math.floor(Math.random() * battleState.cpuHand.length)];
+    
+    // Move to hand selection phase with CPU card selected
+    setBattleState(prev => prev ? { 
+      ...prev, 
+      phase: 'SELECT_HAND',
+      cpuSelectedCard: cpuCard 
+    } : null);
   };
 
   const handleHandSelect = (hand: 'ROCK' | 'SCISSORS' | 'PAPER') => {
@@ -113,8 +120,12 @@ const Battle: React.FC = () => {
   const handleConfirmHand = () => {
     if (!battleState || !battleState.selectedCard || !battleState.selectedHand || battleState.phase !== 'SELECT_HAND') return;
 
-    // CPU selects random card and hand
-    const cpuCard = battleState.cpuHand[Math.floor(Math.random() * battleState.cpuHand.length)];
+    // CPU card should already be selected in SELECT_HAND phase
+    const cpuCard = battleState.cpuSelectedCard;
+    if (!cpuCard) {
+      console.error('CPU card not selected');
+      return;
+    }
     const cpuHand = ['ROCK', 'SCISSORS', 'PAPER'][Math.floor(Math.random() * 3)] as 'ROCK' | 'SCISSORS' | 'PAPER';
     
     // Judge battle
@@ -285,6 +296,8 @@ const Battle: React.FC = () => {
         cpuHp={battleState.cpuHp}
         playerMaxHp={playerLeaderCard.hp}
         cpuMaxHp={cpuLeaderCard.hp}
+        playerLeaderCard={playerLeaderCard}
+        cpuLeaderCard={cpuLeaderCard}
         turn={battleState.turn}
         playerHand={battleState.playerHand}
         cpuHandCount={battleState.cpuHand.length}

@@ -6,6 +6,8 @@ interface BattleUIProps {
   cpuHp: number;
   playerMaxHp: number;
   cpuMaxHp: number;
+  playerLeaderCard: Card;
+  cpuLeaderCard: Card;
   turn: number;
   playerHand: Card[];
   cpuHandCount: number;
@@ -29,6 +31,8 @@ const BattleUI: React.FC<BattleUIProps> = ({
   cpuHp,
   playerMaxHp,
   cpuMaxHp,
+  playerLeaderCard,
+  cpuLeaderCard,
   turn,
   playerHand,
   cpuHandCount,
@@ -64,30 +68,96 @@ const BattleUI: React.FC<BattleUIProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto p-4">
-      {/* HP Bars */}
+      {/* Leader Card Stats */}
       <div className="grid grid-cols-2 gap-4 mb-6">
-        {/* Player HP */}
+        {/* Player Leader */}
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-lg font-bold mb-2 text-blue-600">プレイヤー</h3>
-          <div className="text-2xl font-bold mb-2">{playerHp} / {playerMaxHp}</div>
-          <div className="w-full bg-gray-200 rounded-full h-4">
+          <h3 className="text-lg font-bold mb-3 text-blue-600">プレイヤー (リーダー)</h3>
+          <div className="mb-3">
+            <div className="text-sm text-gray-600 mb-1">{playerLeaderCard.name}</div>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-green-50 rounded p-2">
+                <div className="text-xs text-gray-500">HP</div>
+                <div className="text-lg font-bold text-green-600">{playerHp}</div>
+                <div className="text-xs text-gray-400">/ {playerMaxHp}</div>
+              </div>
+              <div className="bg-red-50 rounded p-2">
+                <div className="text-xs text-gray-500">ATK</div>
+                <div className="text-lg font-bold text-red-600">{playerLeaderCard.atk}</div>
+              </div>
+              <div className="bg-blue-50 rounded p-2">
+                <div className="text-xs text-gray-500">DEF</div>
+                <div className="text-lg font-bold text-blue-600">{playerLeaderCard.def}</div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3">
             <div
-              className={`h-4 rounded-full transition-all ${getHpBarColor(playerHp, playerMaxHp)}`}
+              className={`h-3 rounded-full transition-all ${getHpBarColor(playerHp, playerMaxHp)}`}
               style={{ width: `${Math.max(0, (playerHp / playerMaxHp) * 100)}%` }}
             />
           </div>
+          {selectedCard && (
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="text-xs text-gray-500 mb-1">合算ステータス (リーダー + カード)</div>
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div className="text-green-600">
+                  HP: {playerHp}
+                </div>
+                <div className="text-red-600">
+                  ATK: {playerLeaderCard.atk + selectedCard.atk}
+                </div>
+                <div className="text-blue-600">
+                  DEF: {playerLeaderCard.def + selectedCard.def}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* CPU HP */}
+        {/* CPU Leader */}
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-lg font-bold mb-2 text-red-600">CPU</h3>
-          <div className="text-2xl font-bold mb-2">{cpuHp} / {cpuMaxHp}</div>
-          <div className="w-full bg-gray-200 rounded-full h-4">
+          <h3 className="text-lg font-bold mb-3 text-red-600">CPU (リーダー)</h3>
+          <div className="mb-3">
+            <div className="text-sm text-gray-600 mb-1">{cpuLeaderCard.name}</div>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-green-50 rounded p-2">
+                <div className="text-xs text-gray-500">HP</div>
+                <div className="text-lg font-bold text-green-600">{cpuHp}</div>
+                <div className="text-xs text-gray-400">/ {cpuMaxHp}</div>
+              </div>
+              <div className="bg-red-50 rounded p-2">
+                <div className="text-xs text-gray-500">ATK</div>
+                <div className="text-lg font-bold text-red-600">{cpuLeaderCard.atk}</div>
+              </div>
+              <div className="bg-blue-50 rounded p-2">
+                <div className="text-xs text-gray-500">DEF</div>
+                <div className="text-lg font-bold text-blue-600">{cpuLeaderCard.def}</div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3">
             <div
-              className={`h-4 rounded-full transition-all ${getHpBarColor(cpuHp, cpuMaxHp)}`}
+              className={`h-3 rounded-full transition-all ${getHpBarColor(cpuHp, cpuMaxHp)}`}
               style={{ width: `${Math.max(0, (cpuHp / cpuMaxHp) * 100)}%` }}
             />
           </div>
+          {cpuSelectedCard && (
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="text-xs text-gray-500 mb-1">合算ステータス (リーダー + カード)</div>
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div className="text-green-600">
+                  HP: {cpuHp}
+                </div>
+                <div className="text-red-600">
+                  ATK: {cpuLeaderCard.atk + cpuSelectedCard.atk}
+                </div>
+                <div className="text-blue-600">
+                  DEF: {cpuLeaderCard.def + cpuSelectedCard.def}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -128,10 +198,10 @@ const BattleUI: React.FC<BattleUIProps> = ({
           {/* CPU Side */}
           <div className="text-center">
             <h4 className="text-lg font-bold mb-4 text-red-600">CPU</h4>
-            {cpuSelectedCard && phase === 'JUDGE' ? (
+            {cpuSelectedCard && (phase === 'SELECT_HAND' || phase === 'JUDGE') ? (
               <div className="bg-white border-4 border-red-500 rounded-lg p-4 inline-block">
                 <div className="text-sm font-bold mb-2">{cpuSelectedCard.name}</div>
-                {cpuSelectedHand && (
+                {cpuSelectedHand && phase === 'JUDGE' && (
                   <div className="text-4xl mb-2">{getHandIcon(cpuSelectedHand)}</div>
                 )}
                 <div className="text-xs">
@@ -144,7 +214,7 @@ const BattleUI: React.FC<BattleUIProps> = ({
               </div>
             ) : (
               <div className="text-gray-400 text-lg">
-                {phase === 'SELECT_CARD' || phase === 'SELECT_HAND' ? '考え中...' : ''}
+                {phase === 'SELECT_CARD' && '考え中...'}
               </div>
             )}
           </div>
