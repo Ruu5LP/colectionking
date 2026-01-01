@@ -121,7 +121,14 @@ const Battle: React.FC = () => {
     const cpuHand = ['ROCK', 'SCISSORS', 'PAPER'][Math.floor(Math.random() * 3)] as 'ROCK' | 'SCISSORS' | 'PAPER';
     
     // Judge battle
-    const result = judgeBattle(battleState.selectedCard, cpuCard, battleState.selectedHand, cpuHand);
+    const result = judgeBattle(
+      battleState.selectedCard,
+      cpuCard,
+      battleState.selectedHand,
+      cpuHand,
+      battleState.playerHp,
+      battleState.cpuHp
+    );
     
     const newPlayerHp = Math.max(0, battleState.playerHp - result.playerDamage);
     const newCpuHp = Math.max(0, battleState.cpuHp - result.cpuDamage);
