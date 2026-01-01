@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Hand } from '../types';
-import { HAND_ICONS, HAND_LABELS, HAND_STYLES, HAND_SELECTED_STYLES, formatHand } from '../shared/janken';
+import { HAND_ICONS, HAND_LABELS, HAND_STYLES, HAND_SELECTED_STYLES } from '../shared/janken';
 
 interface BattleUIProps {
   playerHp: number;
