@@ -75,9 +75,11 @@ const Battle: React.FC = () => {
           playerDeck: playerDrawResult.remaining,
           cpuDeck: cpuDrawResult.remaining,
           selectedCard: null,
+          selectedHand: null,
           cpuSelectedCard: null,
+          cpuSelectedHand: null,
           battleLog: ['バトル開始！'],
-          phase: 'SELECT',
+          phase: 'SELECT_CARD',
           winner: null,
         });
 
@@ -93,19 +95,33 @@ const Battle: React.FC = () => {
   }, [userId, navigate, battleKey]);
 
   const handleCardSelect = (card: Card) => {
-    if (!battleState || battleState.phase !== 'SELECT') return;
+    if (!battleState || battleState.phase !== 'SELECT_CARD') return;
     
     setBattleState(prev => prev ? { ...prev, selectedCard: card } : null);
   };
 
-  const handleConfirm = () => {
-    if (!battleState || !battleState.selectedCard || battleState.phase !== 'SELECT') return;
+  const handleConfirmCard = () => {
+    if (!battleState || !battleState.selectedCard || battleState.phase !== 'SELECT_CARD') return;
+    
+    // Move to hand selection phase
+    setBattleState(prev => prev ? { ...prev, phase: 'SELECT_HAND' } : null);
+  };
 
-    // CPU selects random card
+  const handleHandSelect = (hand: 'ROCK' | 'SCISSORS' | 'PAPER') => {
+    if (!battleState || battleState.phase !== 'SELECT_HAND') return;
+    
+    setBattleState(prev => prev ? { ...prev, selectedHand: hand } : null);
+  };
+
+  const handleConfirmHand = () => {
+    if (!battleState || !battleState.selectedCard || !battleState.selectedHand || battleState.phase !== 'SELECT_HAND') return;
+
+    // CPU selects random card and hand
     const cpuCard = battleState.cpuHand[Math.floor(Math.random() * battleState.cpuHand.length)];
+    const cpuHand = ['ROCK', 'SCISSORS', 'PAPER'][Math.floor(Math.random() * 3)] as 'ROCK' | 'SCISSORS' | 'PAPER';
     
     // Judge battle
-    const result = judgeBattle(battleState.selectedCard, cpuCard);
+    const result = judgeBattle(battleState.selectedCard, cpuCard, battleState.selectedHand, cpuHand);
     
     const newPlayerHp = Math.max(0, battleState.playerHp - result.playerDamage);
     const newCpuHp = Math.max(0, battleState.cpuHp - result.cpuDamage);
@@ -121,7 +137,7 @@ const Battle: React.FC = () => {
 
     // Check for winner
     let winner: 'PLAYER' | 'CPU' | 'DRAW' | null = null;
-    let phase: 'SELECT' | 'JUDGE' | 'END' = 'JUDGE';
+    let phase: 'SELECT_CARD' | 'SELECT_HAND' | 'JUDGE' | 'END' = 'JUDGE';
     
     if (newPlayerHp <= 0 && newCpuHp <= 0) {
       winner = 'DRAW';
@@ -144,6 +160,7 @@ const Battle: React.FC = () => {
       playerHand: newPlayerHand,
       cpuHand: newCpuHand,
       cpuSelectedCard: cpuCard,
+      cpuSelectedHand: cpuHand,
       battleLog: newLog,
       phase,
       winner,
@@ -200,8 +217,10 @@ const Battle: React.FC = () => {
       playerDeck: newPlayerDeck,
       cpuDeck: newCpuDeck,
       selectedCard: null,
+      selectedHand: null,
       cpuSelectedCard: null,
-      phase: 'SELECT',
+      cpuSelectedHand: null,
+      phase: 'SELECT_CARD',
     });
   };
 
@@ -266,12 +285,16 @@ const Battle: React.FC = () => {
         playerHand={battleState.playerHand}
         cpuHandCount={battleState.cpuHand.length}
         selectedCard={battleState.selectedCard}
+        selectedHand={battleState.selectedHand}
         cpuSelectedCard={battleState.cpuSelectedCard}
+        cpuSelectedHand={battleState.cpuSelectedHand}
         battleLog={battleState.battleLog}
         phase={battleState.phase}
         winner={battleState.winner}
         onCardSelect={handleCardSelect}
-        onConfirm={handleConfirm}
+        onConfirmCard={handleConfirmCard}
+        onHandSelect={handleHandSelect}
+        onConfirmHand={handleConfirmHand}
         onNextTurn={handleNextTurn}
         onRestart={handleRestart}
       />

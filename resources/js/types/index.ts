@@ -7,7 +7,6 @@ export interface Card {
   id: string;
   name: string;
   kind: CardKind;
-  hand: Hand;
   atk: number;
   def: number;
   element: Element;
@@ -40,9 +39,11 @@ export interface BattleState {
   playerDeck: Card[];
   cpuDeck: Card[];
   selectedCard: Card | null;
+  selectedHand: Hand | null;
   cpuSelectedCard: Card | null;
+  cpuSelectedHand: Hand | null;
   battleLog: string[];
-  phase: 'SELECT' | 'JUDGE' | 'END';
+  phase: 'SELECT_CARD' | 'SELECT_HAND' | 'JUDGE' | 'END';
   winner: 'PLAYER' | 'CPU' | 'DRAW' | null;
 }
 

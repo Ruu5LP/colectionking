@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardKind, Hand, Element } from '../types';
+import { Card, CardKind, Element } from '../types';
 import { useApi } from '../hooks/useApi';
 import CardGrid from '../components/CardGrid';
 import CardFilterPanel from '../components/CardFilterPanel';
@@ -9,7 +9,6 @@ const Collection: React.FC = () => {
   const { data: cards, loading, error } = useApi<Card[]>('/api/cards');
   
   const [kindFilter, setKindFilter] = useState<CardKind | 'ALL'>('ALL');
-  const [handFilter, setHandFilter] = useState<Hand | 'ALL'>('ALL');
   const [elementFilter, setElementFilter] = useState<Element | 'ALL'>('ALL');
 
   const filteredCards = useMemo(() => {
@@ -17,11 +16,10 @@ const Collection: React.FC = () => {
     
     return cards.filter(card => {
       if (kindFilter !== 'ALL' && card.kind !== kindFilter) return false;
-      if (handFilter !== 'ALL' && card.hand !== handFilter) return false;
       if (elementFilter !== 'ALL' && card.element !== elementFilter) return false;
       return true;
     });
-  }, [cards, kindFilter, handFilter, elementFilter]);
+  }, [cards, kindFilter, elementFilter]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -57,10 +55,8 @@ const Collection: React.FC = () => {
           <>
             <CardFilterPanel
               kindFilter={kindFilter}
-              handFilter={handFilter}
               elementFilter={elementFilter}
               onKindChange={setKindFilter}
-              onHandChange={setHandFilter}
               onElementChange={setElementFilter}
             />
 

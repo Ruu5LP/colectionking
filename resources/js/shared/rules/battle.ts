@@ -38,16 +38,24 @@ export const calculateDamage = (attacker: Card, defender: Card): number => {
   return damage;
 };
 
-// Judge battle between two cards
-export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
-  const handResult = compareHands(playerCard.hand, cpuCard.hand);
+// Judge battle between two cards with player-chosen hands
+export const judgeBattle = (
+  playerCard: Card,
+  cpuCard: Card,
+  playerHand: Hand,
+  cpuHand: Hand
+): JudgeResult => {
+  const handResult = compareHands(playerHand, cpuHand);
   
   if (handResult === 'DRAW') {
+    // Both take small damage
+    const playerDamage = Math.floor(calculateDamage(cpuCard, playerCard) * 0.3);
+    const cpuDamage = Math.floor(calculateDamage(playerCard, cpuCard) * 0.3);
     return {
       winner: 'DRAW',
-      playerDamage: 0,
-      cpuDamage: 0,
-      message: `引き分け！ 両者とも${playerCard.hand}を出した`,
+      playerDamage,
+      cpuDamage,
+      message: `引き分け！ 両者とも${playerHand}を出した。お互いに小ダメージ`,
     };
   }
   
@@ -58,7 +66,7 @@ export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
       winner: 'PLAYER',
       playerDamage: 0,
       cpuDamage: damage,
-      message: `プレイヤーの勝利！ ${damage}ダメージを与えた${elementBonus}`,
+      message: `プレイヤーの勝利！ ${playerHand} > ${cpuHand} で${damage}ダメージを与えた${elementBonus}`,
     };
   }
   
@@ -69,7 +77,7 @@ export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
     winner: 'CPU',
     playerDamage: damage,
     cpuDamage: 0,
-    message: `CPUの勝利！ ${damage}ダメージを受けた${elementBonus}`,
+    message: `CPUの勝利！ ${cpuHand} > ${playerHand} で${damage}ダメージを受けた${elementBonus}`,
   };
 };
 

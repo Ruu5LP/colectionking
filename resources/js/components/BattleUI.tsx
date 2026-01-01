@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from '../types';
+import { Card, Hand } from '../types';
 
 interface BattleUIProps {
   playerHp: number;
@@ -10,12 +10,16 @@ interface BattleUIProps {
   playerHand: Card[];
   cpuHandCount: number;
   selectedCard: Card | null;
+  selectedHand: Hand | null;
   cpuSelectedCard: Card | null;
+  cpuSelectedHand: Hand | null;
   battleLog: string[];
-  phase: 'SELECT' | 'JUDGE' | 'END';
+  phase: 'SELECT_CARD' | 'SELECT_HAND' | 'JUDGE' | 'END';
   winner: 'PLAYER' | 'CPU' | 'DRAW' | null;
   onCardSelect: (card: Card) => void;
-  onConfirm: () => void;
+  onConfirmCard: () => void;
+  onHandSelect: (hand: Hand) => void;
+  onConfirmHand: () => void;
   onNextTurn: () => void;
   onRestart: () => void;
 }
@@ -29,12 +33,16 @@ const BattleUI: React.FC<BattleUIProps> = ({
   playerHand,
   cpuHandCount,
   selectedCard,
+  selectedHand,
   cpuSelectedCard,
+  cpuSelectedHand,
   battleLog,
   phase,
   winner,
   onCardSelect,
-  onConfirm,
+  onConfirmCard,
+  onHandSelect,
+  onConfirmHand,
   onNextTurn,
   onRestart,
 }) => {
@@ -97,7 +105,9 @@ const BattleUI: React.FC<BattleUIProps> = ({
             {selectedCard && (
               <div className="bg-white border-4 border-blue-500 rounded-lg p-4 inline-block">
                 <div className="text-sm font-bold mb-2">{selectedCard.name}</div>
-                <div className="text-4xl mb-2">{getHandIcon(selectedCard.hand)}</div>
+                {selectedHand && phase === 'JUDGE' && (
+                  <div className="text-4xl mb-2">{getHandIcon(selectedHand)}</div>
+                )}
                 <div className="text-xs">
                   <div className="text-red-600">ATK: {selectedCard.atk}</div>
                   <div className="text-blue-600">DEF: {selectedCard.def}</div>
@@ -107,8 +117,11 @@ const BattleUI: React.FC<BattleUIProps> = ({
                 </div>
               </div>
             )}
-            {!selectedCard && phase === 'SELECT' && (
+            {!selectedCard && phase === 'SELECT_CARD' && (
               <div className="text-gray-400 text-lg">カードを選択してください</div>
+            )}
+            {selectedCard && !selectedHand && phase === 'SELECT_HAND' && (
+              <div className="text-gray-400 text-lg">手を選択してください</div>
             )}
           </div>
 
@@ -118,7 +131,9 @@ const BattleUI: React.FC<BattleUIProps> = ({
             {cpuSelectedCard && phase === 'JUDGE' ? (
               <div className="bg-white border-4 border-red-500 rounded-lg p-4 inline-block">
                 <div className="text-sm font-bold mb-2">{cpuSelectedCard.name}</div>
-                <div className="text-4xl mb-2">{getHandIcon(cpuSelectedCard.hand)}</div>
+                {cpuSelectedHand && (
+                  <div className="text-4xl mb-2">{getHandIcon(cpuSelectedHand)}</div>
+                )}
                 <div className="text-xs">
                   <div className="text-red-600">ATK: {cpuSelectedCard.atk}</div>
                   <div className="text-blue-600">DEF: {cpuSelectedCard.def}</div>
@@ -129,7 +144,7 @@ const BattleUI: React.FC<BattleUIProps> = ({
               </div>
             ) : (
               <div className="text-gray-400 text-lg">
-                {phase === 'SELECT' ? '考え中...' : ''}
+                {phase === 'SELECT_CARD' || phase === 'SELECT_HAND' ? '考え中...' : ''}
               </div>
             )}
           </div>
@@ -137,7 +152,7 @@ const BattleUI: React.FC<BattleUIProps> = ({
       </div>
 
       {/* Player Hand */}
-      {phase === 'SELECT' && (
+      {phase === 'SELECT_CARD' && (
         <div className="bg-white rounded-lg shadow p-4 mb-6">
           <h3 className="text-lg font-bold mb-4">手札 ({playerHand.length}枚)</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -156,7 +171,6 @@ const BattleUI: React.FC<BattleUIProps> = ({
                 <div className="text-xs font-bold mb-1 truncate" title={card.name}>
                   {card.name}
                 </div>
-                <div className="text-2xl text-center mb-1">{getHandIcon(card.hand)}</div>
                 <div className="text-xs text-center">
                   <div className="text-red-600">ATK: {card.atk}</div>
                   <div className="text-blue-600">DEF: {card.def}</div>
@@ -170,11 +184,36 @@ const BattleUI: React.FC<BattleUIProps> = ({
         </div>
       )}
 
+      {/* Hand Selection */}
+      {phase === 'SELECT_HAND' && (
+        <div className="bg-white rounded-lg shadow p-4 mb-6">
+          <h3 className="text-lg font-bold mb-4">じゃんけんの手を選択</h3>
+          <div className="grid grid-cols-3 gap-4">
+            {(['ROCK', 'SCISSORS', 'PAPER'] as const).map((hand) => (
+              <div
+                key={hand}
+                onClick={() => onHandSelect(hand)}
+                className={`
+                  border-4 rounded-lg p-6 cursor-pointer transition-all text-center
+                  ${selectedHand === hand
+                    ? 'border-blue-500 bg-blue-50 ring-4 ring-blue-300 scale-105'
+                    : 'border-gray-300 bg-white hover:border-blue-300 hover:shadow-md'
+                  }
+                `}
+              >
+                <div className="text-6xl mb-2">{getHandIcon(hand)}</div>
+                <div className="text-lg font-bold">{hand}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
-        {phase === 'SELECT' && (
+        {phase === 'SELECT_CARD' && (
           <button
-            onClick={onConfirm}
+            onClick={onConfirmCard}
             disabled={!selectedCard}
             className={`
               w-full py-3 px-6 rounded-lg font-bold text-white text-lg
@@ -184,7 +223,22 @@ const BattleUI: React.FC<BattleUIProps> = ({
               }
             `}
           >
-            決定
+            カードを決定
+          </button>
+        )}
+        {phase === 'SELECT_HAND' && (
+          <button
+            onClick={onConfirmHand}
+            disabled={!selectedHand}
+            className={`
+              w-full py-3 px-6 rounded-lg font-bold text-white text-lg
+              ${selectedHand 
+                ? 'bg-blue-500 hover:bg-blue-600 cursor-pointer' 
+                : 'bg-gray-300 cursor-not-allowed'
+              }
+            `}
+          >
+            じゃんけん！
           </button>
         )}
         {phase === 'JUDGE' && !winner && (

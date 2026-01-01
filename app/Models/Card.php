@@ -13,7 +13,6 @@ class Card extends Model
         'id',
         'name',
         'kind',
-        'hand',
         'atk',
         'def',
         'element',
