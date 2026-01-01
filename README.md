@@ -56,14 +56,71 @@ docker compose exec app php artisan db:seed
 ```
 
 This will create:
-- 10 Leaders (HP: 700-1500)
-- 20 Normal cards
-- 10 Special cards (with elements)
-- 3 Sample decks for testing
+- A test user (email: test@example.com, password: password)
+- 10 cards with element attributes from cards.json
 
-6. Access the application:
+6. Grant all cards to the test user:
+```bash
+docker compose exec app php artisan cards:grant-all --email=test@example.com
+```
+
+7. Access the application:
 - **Frontend**: http://localhost:8080
 - **API**: http://localhost:8080/api/*
+
+## Card Management
+
+### Adding New Cards
+
+Cards are managed through JSON configuration in `database/seed_data/cards.json`. To add new cards:
+
+1. Edit `database/seed_data/cards.json` and add your card data:
+
+```json
+{
+  "id": "C011",
+  "name": "新しいカード",
+  "hp": 1300,
+  "atk": 310,
+  "def": 210,
+  "rarity": 4,
+  "description": "カードの説明",
+  "image_url": null,
+  "elements": [
+    {"element":"fire","base":15,"cap":70},
+    {"element":"water","base":5,"cap":40},
+    {"element":"wind","base":8,"cap":50},
+    {"element":"earth","base":0,"cap":20},
+    {"element":"mech","base":0,"cap":30}
+  ]
+}
+```
+
+Card properties:
+- `id`: Unique card ID (e.g., "C001", "C002", etc.)
+- `name`: Card name
+- `hp`, `atk`, `def`: Card stats
+- `rarity`: 1-6 (displayed as stars ★)
+- `description`: Optional card description
+- `image_url`: Optional image URL
+- `elements`: Array of 5 elements (fire/water/wind/earth/mech) with:
+  - `base`: Initial value (0-100)
+  - `cap`: Maximum value (0-100)
+
+2. Run the seeder to update the database:
+
+```bash
+docker compose exec app php artisan db:seed --class=CardsJsonSeeder
+```
+
+The seeder uses `updateOrCreate`, so you can safely run it multiple times. Existing cards will be updated, and new cards will be added.
+
+3. Grant new cards to test users:
+
+```bash
+docker compose exec app php artisan cards:grant-all --email=test@example.com
+```
+
 
 ## Development
 

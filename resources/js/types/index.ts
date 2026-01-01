@@ -1,17 +1,44 @@
-// Card types
-export type CardKind = 'NORMAL' | 'SPECIAL';
-export type Hand = 'ROCK' | 'SCISSORS' | 'PAPER';
-export type Element = 'FIRE' | 'WIND' | 'WATER' | null;
+// Element types
+export type Element = 'fire' | 'water' | 'wind' | 'earth' | 'mech';
 
+export interface ElementValues {
+  base: number;
+  cap: number;
+}
+
+export interface UserElementValues extends ElementValues {
+  current: number;
+}
+
+export type CardElements = {
+  [K in Element]: ElementValues;
+};
+
+export type UserCardElements = {
+  [K in Element]: UserElementValues;
+};
+
+// Card types
 export interface Card {
   id: string;
   name: string;
-  kind: CardKind;
+  hp: number;
   atk: number;
   def: number;
-  hp: number;
-  element: Element;
+  rarity: number; // 1-6
+  description?: string | null;
+  image_url?: string | null;
+  elements: CardElements;
 }
+
+export interface UserCard extends Omit<Card, 'elements'> {
+  user_card_id: number;
+  elements: UserCardElements;
+}
+
+// Legacy types (kept for backwards compatibility during migration)
+export type CardKind = 'NORMAL' | 'SPECIAL';
+export type Hand = 'ROCK' | 'SCISSORS' | 'PAPER';
 
 // Deck types
 export interface Deck {
