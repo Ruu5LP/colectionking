@@ -3,19 +3,16 @@
 ## One-Command Setup
 
 ```bash
-# 1. Copy environment file
+# 1. Copy environment file (optional - will be created automatically if missing)
 cp .env.docker .env
 
-# 2. Start all services
+# 2. Start all services (APP_KEY will be generated automatically)
 docker compose up -d
 
-# 3. Generate application key
-docker compose exec app php artisan key:generate
-
-# 4. Run database migrations
+# 3. Run database migrations
 docker compose exec app php artisan migrate
 
-# 5. Open your browser
+# 4. Open your browser
 open http://localhost:8080
 ```
 
@@ -27,6 +24,8 @@ After starting the services, you'll have:
 - **API**: RESTful endpoints at http://localhost:8080/api/*
 - **Database**: MySQL running on port 3306
 - **Hot Reload**: Automatic page updates when editing React files
+
+**Note**: The application encryption key (APP_KEY) is automatically generated on first startup if missing.
 
 ## Testing the Setup
 

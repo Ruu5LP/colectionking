@@ -33,26 +33,19 @@ git clone https://github.com/Ruu5LP/colectionking.git
 cd colectionking
 ```
 
-2. Copy the Docker environment file:
+2. Copy the Docker environment file (optional - will be created automatically):
 ```bash
 cp .env.docker .env
 ```
 
-3. Generate application key:
-```bash
-# If you have PHP and Composer installed locally
-php artisan key:generate
-
-# OR using Docker (after step 4)
-docker compose exec app php artisan key:generate
-```
-
-4. Start the Docker containers:
+3. Start the Docker containers:
 ```bash
 docker compose up -d
 ```
 
-5. Run database migrations (inside Docker):
+**Note**: The application encryption key (APP_KEY) is automatically generated on first startup if missing.
+
+4. Run database migrations (inside Docker):
 ```bash
 docker compose exec app php artisan migrate
 ```
