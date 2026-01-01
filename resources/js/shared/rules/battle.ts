@@ -92,9 +92,9 @@ export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
   }
   
   // handResult === 'LOSE'
-  const bonus = -30; // Lose penalty
+  const bonus = 30; // Win bonus
   const extra = getElementExtra(cpuCard, playerCard);
-  const damage = calculateDamage(cpuCard, playerCard, bonus);
+  const damage = calculateDamage(cpuCard, playerCard, -bonus); // Apply negative bonus for loss
   
   let elementInfo = '';
   if (extra > 0) {

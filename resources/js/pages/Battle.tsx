@@ -135,19 +135,6 @@ const Battle: React.FC = () => {
       winner = 'PLAYER';
       phase = 'END';
       newLog.push('勝利！');
-    } else if (battleState.turn >= 10) {
-      // Maximum 10 turns - compare HP
-      phase = 'END';
-      if (newPlayerHp > newCpuHp) {
-        winner = 'PLAYER';
-        newLog.push('10ターン終了！ HPが高いプレイヤーの勝利！');
-      } else if (newCpuHp > newPlayerHp) {
-        winner = 'CPU';
-        newLog.push('10ターン終了！ HPが高いCPUの勝利！');
-      } else {
-        winner = 'DRAW';
-        newLog.push('10ターン終了！ HPが同じで引き分け！');
-      }
     }
 
     setBattleState({
