@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
-use App\Http\Controllers\LeaderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +23,6 @@ Route::get('/status', function () {
 });
 
 // Game API endpoints
-Route::get('/leaders', [LeaderController::class, 'index']);
 Route::get('/cards', [CardController::class, 'index']);
 Route::get('/decks/{userId}', [DeckController::class, 'show']);
 Route::post('/decks/{userId}', [DeckController::class, 'store']);

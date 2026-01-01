@@ -8,7 +8,7 @@ class Deck extends Model
 {
     protected $fillable = [
         'user_id',
-        'leader_id',
+        'leader_card_id',
         'cards_json',
     ];
 
