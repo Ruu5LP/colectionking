@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Hand } from '../types';
 import { HAND_ICONS, HAND_LABELS, HAND_STYLES, HAND_SELECTED_STYLES } from '../shared/janken';
+import JankenWheel from './JankenWheel';
 
 interface BattleUIProps {
   playerHp: number;
@@ -249,25 +250,12 @@ const BattleUI: React.FC<BattleUIProps> = ({
       {/* Hand Selection */}
       {phase === 'SELECT_HAND' && (
         <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <h3 className="text-lg font-bold mb-4">じゃんけんの手を選択</h3>
-          <div className="grid grid-cols-3 gap-4">
-            {(['ROCK', 'SCISSORS', 'PAPER'] as const).map((hand) => (
-              <div
-                key={hand}
-                onClick={() => onHandSelect(hand)}
-                className={`
-                  border-4 rounded-lg p-6 cursor-pointer transition-all text-center
-                  ${selectedHand === hand
-                    ? `${HAND_SELECTED_STYLES[hand]} scale-105`
-                    : `${HAND_STYLES[hand]} hover:shadow-md`
-                  }
-                `}
-              >
-                <div className="text-6xl mb-2">{HAND_ICONS[hand]}</div>
-                <div className="text-lg font-bold">{HAND_LABELS[hand]}</div>
-              </div>
-            ))}
-          </div>
+          <h3 className="text-lg font-bold mb-4 text-center">じゃんけんの手を選択</h3>
+          <JankenWheel
+            value={selectedHand}
+            onChange={onHandSelect}
+            disabled={phase !== 'SELECT_HAND'}
+          />
         </div>
       )}
 
