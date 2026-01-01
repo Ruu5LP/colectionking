@@ -52,6 +52,7 @@ const Battle: React.FC = () => {
         const playerLeaderData = leaders.find(l => l.id === deck.leader_id);
         if (!playerLeaderData) {
           setError('リーダーが見つかりません');
+          setLoading(false);
           return;
         }
         setPlayerLeader(playerLeaderData);
@@ -60,6 +61,7 @@ const Battle: React.FC = () => {
         const playerCards = allCards.filter(c => deck.cards_json.includes(c.id));
         if (playerCards.length !== 10) {
           setError('デッキが正しくありません');
+          setLoading(false);
           return;
         }
 
