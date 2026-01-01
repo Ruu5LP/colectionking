@@ -12,7 +12,10 @@ docker compose up -d
 # 3. Run database migrations
 docker compose exec app php artisan migrate
 
-# 4. Open your browser
+# 4. Seed the database with initial data
+docker compose exec app php artisan db:seed
+
+# 5. Open your browser
 open http://localhost:8080
 ```
 

@@ -50,6 +50,11 @@ docker compose up -d
 docker compose exec app php artisan migrate
 ```
 
+5. Seed the database with initial data:
+```bash
+docker compose exec app php artisan db:seed
+```
+
 6. Access the application:
 - **Frontend**: http://localhost:8080
 - **API**: http://localhost:8080/api/*
