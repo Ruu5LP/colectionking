@@ -204,9 +204,6 @@ const BattleUI: React.FC<BattleUIProps> = ({
                 {cpuSelectedHand && phase === 'JUDGE' && (
                   <div className="text-4xl mb-2">{getHandIcon(cpuSelectedHand)}</div>
                 )}
-                {phase === 'SELECT_HAND' && (
-                  <div className="text-2xl mb-2 text-gray-400">???</div>
-                )}
                 <div className="text-xs">
                   <div className="text-red-600">ATK: {cpuSelectedCard.atk}</div>
                   <div className="text-blue-600">DEF: {cpuSelectedCard.def}</div>
