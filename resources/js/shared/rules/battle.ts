@@ -49,7 +49,7 @@ const hpRatioScale = (attackerHp: number, defenderHp: number): number => {
   if (defenderHp <= 0) return HP_SCALE_MAX;
   
   const ratio = attackerHp / defenderHp;
-  // Use a very aggressive exponent for extreme scaling in one-sided battles
+  // Use square root scaling for balanced gameplay with significant impact in one-sided battles
   const scaled = Math.pow(ratio, HP_SCALE_EXPONENT);
   return Math.max(HP_SCALE_MIN, Math.min(HP_SCALE_MAX, scaled));
 };
@@ -97,7 +97,8 @@ export const calculateDamage = (
   const scaledDamage = Math.max(0, baseDiff * ATK_DEF_MULTIPLIER);
   const minDamage = FIXED_BASE_DAMAGE + scaledDamage * MIN_DAMAGE_FACTOR;
   const maxDamage = FIXED_BASE_DAMAGE + scaledDamage * MAX_DAMAGE_FACTOR;
-  let damage = triangularRandom(minDamage, maxDamage);
+  // Ensure minDamage <= maxDamage for triangularRandom
+  let damage = triangularRandom(Math.min(minDamage, maxDamage), Math.max(minDamage, maxDamage));
   
   // Apply element advantage bonus (50% more damage)
   if (hasElementAdvantage(attacker, defender)) {
