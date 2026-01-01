@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card, Deck as DeckType } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
-import UnifiedCardSelector from '../components/UnifiedCardSelector';
+import CardGrid from '../components/CardGrid';
+import ElementBar from '../components/ElementBar';
+import RarityDisplay from '../components/RarityDisplay';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -17,6 +19,8 @@ const Deck: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [mode, setMode] = useState<'leader' | 'deck'>('leader');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const MAX_CARDS = 10;
 
@@ -25,16 +29,15 @@ const Deck: React.FC = () => {
     if (existingDeck) {
       setSelectedLeaderCardId(existingDeck.leader_card_id);
       setSelectedCardIds(Array.isArray(existingDeck.cards_json) ? existingDeck.cards_json : []);
+      if (existingDeck.leader_card_id) {
+        setMode('deck');
+      }
     }
   }, [existingDeck]);
 
   const handleLeaderSelect = (card: Card) => {
     setSelectedLeaderCardId(card.id);
-    setSuccess(false);
-  };
-  
-  const handleLeaderDeselect = () => {
-    setSelectedLeaderCardId(null);
+    setMode('deck');
     setSuccess(false);
   };
 
@@ -81,6 +84,14 @@ const Deck: React.FC = () => {
 
   const isLoading = cardsLoading;
   const canSave = selectedLeaderCardId && selectedCardIds.length === MAX_CARDS && !saving;
+  
+  const leaderCard = cards?.find(c => c.id === selectedLeaderCardId);
+  const selectedCards = cards?.filter(c => selectedCardIds.includes(c.id)) || [];
+  
+  // Filter cards based on search term
+  const filteredCards = cards?.filter(card => 
+    card.name.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,16 +119,132 @@ const Deck: React.FC = () => {
 
         {!isLoading && cards && (
           <>
-            {/* Unified Card Selector */}
-            <UnifiedCardSelector
-              availableCards={cards}
-              selectedLeaderCardId={selectedLeaderCardId}
-              selectedCardIds={selectedCardIds}
-              onLeaderSelect={handleLeaderSelect}
-              onLeaderDeselect={handleLeaderDeselect}
-              onCardSelect={handleCardSelect}
-              maxCards={MAX_CARDS}
-            />
+            {/* Mode Selector */}
+            <div className="bg-white rounded-lg shadow p-4 mb-6">
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setMode('leader')}
+                  className={`px-4 py-2 rounded-lg font-semibold ${
+                    mode === 'leader' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  リーダー選択
+                </button>
+                <button
+                  onClick={() => setMode('deck')}
+                  disabled={!selectedLeaderCardId}
+                  className={`px-4 py-2 rounded-lg font-semibold ${
+                    mode === 'deck' && selectedLeaderCardId
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  デッキ選択 ({selectedCardIds.length}/{MAX_CARDS})
+                </button>
+              </div>
+            </div>
+
+            {/* Selected Leader and Deck Display - Side by Side */}
+            {leaderCard && (
+              <div className="bg-white rounded-lg shadow p-4 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {/* Leader Card Section */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">選択中のリーダー</h3>
+                    <div className="border-2 rounded-lg p-3 transition-all bg-white border-blue-500 ring-2 ring-blue-500">
+                      <div className="text-sm font-bold mb-2 truncate" title={leaderCard.name}>
+                        {leaderCard.name}
+                      </div>
+                      
+                      <RarityDisplay rarity={leaderCard.rarity} className="mb-2" />
+                      
+                      <div className="flex items-center justify-between text-xs mb-2">
+                        <div className="text-left space-y-1">
+                          <div className="text-green-600">HP: {leaderCard.hp}</div>
+                          <div className="text-red-600">ATK: {leaderCard.atk}</div>
+                          <div className="text-blue-600">DEF: {leaderCard.def}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-2">
+                        <ElementBar elements={leaderCard.elements} />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedLeaderCardId(null);
+                        setMode('leader');
+                      }}
+                      className="mt-2 text-red-500 hover:text-red-700 underline text-sm"
+                    >
+                      リーダーを変更
+                    </button>
+                  </div>
+                  
+                  {/* Selected Deck Cards Section */}
+                  <div className="lg:col-span-2">
+                    <h3 className="text-lg font-semibold mb-3">
+                      選択中のデッキ ({selectedCards.length}/{MAX_CARDS})
+                    </h3>
+                    {selectedCards.length > 0 ? (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                        {selectedCards.map((card) => (
+                          <div
+                            key={card.id}
+                            className="border-2 rounded-lg p-2 transition-all bg-white border-green-500 ring-1 ring-green-500"
+                          >
+                            <div className="text-xs font-bold mb-1 truncate" title={card.name}>
+                              {card.name}
+                            </div>
+                            <RarityDisplay rarity={card.rarity} className="mb-1 scale-75 origin-left" />
+                            <div className="text-xs space-y-0.5">
+                              <div className="text-green-600">HP: {card.hp}</div>
+                              <div className="text-red-600">ATK: {card.atk}</div>
+                              <div className="text-blue-600">DEF: {card.def}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-gray-500 text-sm py-8 text-center border-2 border-dashed border-gray-300 rounded-lg">
+                        デッキカードを選択してください
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Card Selection Area */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">
+                  {mode === 'leader' ? 'リーダーを選択' : 'デッキカードを選択'}
+                </h3>
+                {/* Search Box */}
+                <div className="w-64">
+                  <input
+                    type="text"
+                    placeholder="カード名で検索..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              {filteredCards.length > 0 ? (
+                <CardGrid
+                  cards={filteredCards}
+                  selectedCards={mode === 'leader' ? (selectedLeaderCardId ? [selectedLeaderCardId] : []) : selectedCardIds}
+                  onCardClick={mode === 'leader' ? handleLeaderSelect : handleCardSelect}
+                  maxSelection={mode === 'leader' ? 1 : MAX_CARDS}
+                />
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  検索条件に一致するカードがありません
+                </div>
+              )}
+            </div>
 
             {/* Error Message */}
             {error && (
