@@ -5,10 +5,9 @@ interface ElementBarProps {
   elements: {
     [K in Element]: ElementValues | UserElementValues;
   };
-  showCurrent?: boolean;
 }
 
-const ElementBar: React.FC<ElementBarProps> = ({ elements, showCurrent = false }) => {
+const ElementBar: React.FC<ElementBarProps> = ({ elements }) => {
   const elementOrder: Element[] = ['fire', 'water', 'wind', 'earth', 'mech'];
   
   const elementColors: Record<Element, { bg: string; text: string }> = {
