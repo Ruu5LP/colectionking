@@ -103,7 +103,8 @@ export const calculateDamage = (
   const defCapped = Math.min(defender.def, DAMAGE_CONFIG.STAT_INTERNAL_CAP);
   
   // Calculate HP ratio correction (mild)
-  // Note: HP_MIN_DIVISOR is defensive programming since HP should never be 0 during battle
+  // Note: HP_MIN_DIVISOR is defensive programming. In normal game flow, HP should never be 0
+  // during battle (battle ends when HP reaches 0). This prevents edge case division by zero.
   const hpRatio = attackerHp / Math.max(DAMAGE_CONFIG.HP_MIN_DIVISOR, defenderHp);
   const hpCorrection = clamp(
     Math.pow(hpRatio, DAMAGE_CONFIG.HP_CORRECTION_EXPONENT),
@@ -122,6 +123,8 @@ export const calculateDamage = (
     // Small damage calculation (for draws)
     const base = DAMAGE_CONFIG.SMALL_DAMAGE_BASE;
     const raw = (atkCapped - defCapped) * DAMAGE_CONFIG.SMALL_DAMAGE_STAT_MULTIPLIER;
+    // Use max(0, raw) so negative stat difference doesn't reduce damage below base
+    // This ensures even weaker attackers deal minimum base damage
     let damage = base + Math.max(0, raw);
     
     // Apply HP correction and randomness
@@ -140,6 +143,8 @@ export const calculateDamage = (
     // Big damage calculation (for wins)
     const base = DAMAGE_CONFIG.BIG_DAMAGE_BASE;
     const raw = (atkCapped - defCapped) * DAMAGE_CONFIG.BIG_DAMAGE_STAT_MULTIPLIER;
+    // Use max(0, raw) so negative stat difference doesn't reduce damage below base
+    // This ensures even weaker attackers deal minimum base damage
     let damage = base + Math.max(0, raw);
     
     // Apply HP correction and randomness
