@@ -18,7 +18,11 @@ class DeckController extends Controller
             return response()->json(null);
         }
         
-        return response()->json($deck);
+        // Ensure cards_json is always an array
+        $response = $deck->toArray();
+        $response['cards_json'] = $response['cards_json'] ?? [];
+        
+        return response()->json($response);
     }
 
     public function store(Request $request, $userId)
