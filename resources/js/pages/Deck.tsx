@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, Deck as DeckType, CardKind, Element } from '../types';
+import { Card, Deck as DeckType } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
-import LeaderSelector from '../components/LeaderSelector';
-import DeckSelector from '../components/DeckSelector';
-
-type SortField = 'hp' | 'atk' | 'def' | 'name' | 'kind';
-type SortOrder = 'asc' | 'desc';
+import UnifiedCardSelector from '../components/UnifiedCardSelector';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -21,13 +17,6 @@ const Deck: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  
-  // Shared filter and sort state for both leader and deck selectors
-  const [searchTerm, setSearchTerm] = useState('');
-  const [kindFilter, setKindFilter] = useState<CardKind | 'ALL'>('ALL');
-  const [elementFilter, setElementFilter] = useState<Element | 'ALL'>('ALL');
-  const [sortField, setSortField] = useState<SortField>('name');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const MAX_CARDS = 10;
 
@@ -41,6 +30,11 @@ const Deck: React.FC = () => {
 
   const handleLeaderSelect = (card: Card) => {
     setSelectedLeaderCardId(card.id);
+    setSuccess(false);
+  };
+  
+  const handleLeaderDeselect = () => {
+    setSelectedLeaderCardId(null);
     setSuccess(false);
   };
 
@@ -114,40 +108,16 @@ const Deck: React.FC = () => {
 
         {!isLoading && cards && (
           <>
-            {/* Leader Selection */}
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <LeaderSelector
-                cards={cards}
-                selectedLeaderCardId={selectedLeaderCardId}
-                onSelect={handleLeaderSelect}
-                searchTerm={searchTerm}
-                kindFilter={kindFilter}
-                elementFilter={elementFilter}
-                sortField={sortField}
-                sortOrder={sortOrder}
-              />
-            </div>
-
-            {/* Card Selection */}
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <DeckSelector
-                availableCards={cards}
-                selectedCardIds={selectedCardIds}
-                selectedLeaderCardId={selectedLeaderCardId}
-                onCardSelect={handleCardSelect}
-                maxCards={MAX_CARDS}
-                searchTerm={searchTerm}
-                kindFilter={kindFilter}
-                elementFilter={elementFilter}
-                sortField={sortField}
-                sortOrder={sortOrder}
-                onSearchChange={setSearchTerm}
-                onKindFilterChange={setKindFilter}
-                onElementFilterChange={setElementFilter}
-                onSortFieldChange={setSortField}
-                onSortOrderChange={setSortOrder}
-              />
-            </div>
+            {/* Unified Card Selector */}
+            <UnifiedCardSelector
+              availableCards={cards}
+              selectedLeaderCardId={selectedLeaderCardId}
+              selectedCardIds={selectedCardIds}
+              onLeaderSelect={handleLeaderSelect}
+              onLeaderDeselect={handleLeaderDeselect}
+              onCardSelect={handleCardSelect}
+              maxCards={MAX_CARDS}
+            />
 
             {/* Error Message */}
             {error && (
