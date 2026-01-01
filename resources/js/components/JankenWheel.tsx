@@ -43,21 +43,21 @@ const JankenWheel: React.FC<JankenWheelProps> = ({ value, onChange, disabled = f
       position: 'top-0 left-1/2 -translate-x-1/2', // Top center
     },
     {
-      jankenHand: 'STAR' as JankenHand,
-      icon: '⭐',
-      label: '星',
-      bgColor: 'bg-emerald-50',
-      ringColor: 'ring-emerald-300',
-      textColor: 'text-emerald-700',
-      position: 'bottom-4 left-4', // Bottom left
-    },
-    {
       jankenHand: 'MOON' as JankenHand,
       icon: '🌙',
       label: '月',
       bgColor: 'bg-blue-50',
       ringColor: 'ring-blue-300',
       textColor: 'text-blue-600',
+      position: 'bottom-4 left-4', // Bottom left
+    },
+    {
+      jankenHand: 'STAR' as JankenHand,
+      icon: '⭐',
+      label: '星',
+      bgColor: 'bg-emerald-50',
+      ringColor: 'ring-emerald-300',
+      textColor: 'text-emerald-700',
       position: 'bottom-4 right-4', // Bottom right
     },
   ];
@@ -67,27 +67,40 @@ const JankenWheel: React.FC<JankenWheelProps> = ({ value, onChange, disabled = f
       <div className="relative w-80 h-80 sm:w-[360px] sm:h-[360px]">
         {/* Background plate with rune pattern */}
         <div className="absolute inset-0 bg-gray-200 rounded-full shadow-inner flex items-center justify-center overflow-hidden">
-          {/* Triquetra-like rune pattern (SVG) */}
+          {/* Magatama (勾玉) pattern - three comma-shaped jewels rotating in a circle */}
           <svg
             className="absolute inset-0 w-full h-full opacity-25"
             viewBox="0 0 200 200"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* Three interlocking curves forming a triquetra pattern */}
-            <g fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-500">
-              {/* Top curve */}
-              <path d="M 100 40 Q 60 60, 80 90 Q 100 110, 120 90 Q 140 60, 100 40 Z" />
-              {/* Bottom left curve */}
-              <path d="M 60 140 Q 40 100, 70 80 Q 90 70, 100 90 Q 90 120, 60 140 Z" />
-              {/* Bottom right curve */}
-              <path d="M 140 140 Q 160 100, 130 80 Q 110 70, 100 90 Q 110 120, 140 140 Z" />
-              {/* Central circle */}
-              <circle cx="100" cy="95" r="15" strokeWidth="2" />
-              {/* Connecting arcs */}
-              <path d="M 100 40 Q 70 50, 70 80" strokeWidth="2" />
-              <path d="M 100 40 Q 130 50, 130 80" strokeWidth="2" />
-              <path d="M 60 140 Q 80 120, 100 110" strokeWidth="2" />
-              <path d="M 140 140 Q 120 120, 100 110" strokeWidth="2" />
+            {/* Three magatama (comma jewels) in a circular pattern showing the win cycle */}
+            <g fill="currentColor" stroke="none" className="text-gray-500">
+              {/* Sun magatama (top) - beats Star */}
+              <path 
+                d="M 100 50 C 100 50, 85 55, 80 65 C 75 75, 75 85, 80 90 C 85 95, 95 95, 100 90 C 105 85, 108 75, 100 60 C 95 50, 100 50, 100 50 Z" 
+                transform="rotate(-90 100 100)"
+                opacity="0.8"
+              />
+              {/* Moon magatama (bottom-left) - beats Sun */}
+              <path 
+                d="M 100 50 C 100 50, 85 55, 80 65 C 75 75, 75 85, 80 90 C 85 95, 95 95, 100 90 C 105 85, 108 75, 100 60 C 95 50, 100 50, 100 50 Z" 
+                transform="rotate(150 100 100)"
+                opacity="0.8"
+              />
+              {/* Star magatama (bottom-right) - beats Moon */}
+              <path 
+                d="M 100 50 C 100 50, 85 55, 80 65 C 75 75, 75 85, 80 90 C 85 95, 95 95, 100 90 C 105 85, 108 75, 100 60 C 95 50, 100 50, 100 50 Z" 
+                transform="rotate(30 100 100)"
+                opacity="0.8"
+              />
+              
+              {/* Central circle connecting the three */}
+              <circle cx="100" cy="100" r="20" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.5" />
+              
+              {/* Small dots at the tail of each magatama to emphasize rotation */}
+              <circle cx="100" cy="50" r="3" transform="rotate(-90 100 100)" opacity="0.6" />
+              <circle cx="100" cy="50" r="3" transform="rotate(150 100 100)" opacity="0.6" />
+              <circle cx="100" cy="50" r="3" transform="rotate(30 100 100)" opacity="0.6" />
             </g>
           </svg>
 
