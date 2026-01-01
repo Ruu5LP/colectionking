@@ -18,7 +18,15 @@ class DeckController extends Controller
             return response()->json(null);
         }
         
-        return response()->json($deck);
+        // Explicitly format the response to ensure cards_json is an array
+        return response()->json([
+            'id' => $deck->id,
+            'user_id' => $deck->user_id,
+            'leader_id' => $deck->leader_id,
+            'cards_json' => is_array($deck->cards_json) ? $deck->cards_json : [],
+            'created_at' => $deck->created_at,
+            'updated_at' => $deck->updated_at,
+        ]);
     }
 
     public function store(Request $request, $userId)
@@ -62,6 +70,14 @@ class DeckController extends Controller
             ]
         );
 
-        return response()->json($deck);
+        // Explicitly format the response to ensure cards_json is an array
+        return response()->json([
+            'id' => $deck->id,
+            'user_id' => $deck->user_id,
+            'leader_id' => $deck->leader_id,
+            'cards_json' => is_array($deck->cards_json) ? $deck->cards_json : [],
+            'created_at' => $deck->created_at,
+            'updated_at' => $deck->updated_at,
+        ]);
     }
 }
