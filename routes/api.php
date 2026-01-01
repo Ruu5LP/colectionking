@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use Illuminate\Http\Request;
@@ -21,6 +22,12 @@ Route::get('/status', function () {
         'timestamp' => now()->toIso8601String(),
     ]);
 });
+
+// Auth routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/me', [AuthController::class, 'me']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 // Game API endpoints
 Route::get('/cards', [CardController::class, 'index']);
