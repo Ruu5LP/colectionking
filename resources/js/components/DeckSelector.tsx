@@ -4,18 +4,18 @@ import CardGrid from './CardGrid';
 
 interface DeckSelectorProps {
   availableCards: Card[];
-  selectedCardIds: string[];
+  selectedCardIds?: string[];
   onCardSelect: (card: Card) => void;
   maxCards: number;
 }
 
 const DeckSelector: React.FC<DeckSelectorProps> = ({
   availableCards,
-  selectedCardIds,
+  selectedCardIds = [],
   onCardSelect,
   maxCards,
 }) => {
-  const selectedCards = availableCards.filter(card => selectedCardIds.includes(card.id));
+  const selectedCards = availableCards.filter(card => selectedCardIds?.includes(card.id));
   
   return (
     <div className="mb-6">
