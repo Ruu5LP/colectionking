@@ -18,11 +18,7 @@ class DeckController extends Controller
             return response()->json((object)[]);
         }
         
-        // Ensure cards_json is always an array
-        $response = $deck->toArray();
-        $response['cards_json'] = $response['cards_json'] ?? [];
-        
-        return response()->json($response);
+        return response()->json($this->formatDeckResponse($deck));
     }
 
     public function store(Request $request, $userId)
@@ -66,10 +62,19 @@ class DeckController extends Controller
             ]
         );
 
-        // Ensure cards_json is always an array in response
+        return response()->json($this->formatDeckResponse($deck));
+    }
+
+    /**
+     * Format deck response to ensure cards_json is always an array
+     *
+     * @param Deck $deck
+     * @return array
+     */
+    private function formatDeckResponse(Deck $deck): array
+    {
         $response = $deck->toArray();
         $response['cards_json'] = $response['cards_json'] ?? [];
-        
-        return response()->json($response);
+        return $response;
     }
 }
