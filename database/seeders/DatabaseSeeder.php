@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            CardSeeder::class,
+            CardsJsonSeeder::class,
+            // CardSeeder::class,  // Replaced by CardsJsonSeeder
             DeckSeeder::class,
         ]);
     }
