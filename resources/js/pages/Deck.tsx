@@ -26,7 +26,7 @@ const Deck: React.FC = () => {
   useEffect(() => {
     if (existingDeck) {
       setSelectedLeaderId(existingDeck.leader_id);
-      setSelectedCardIds(existingDeck.cards_json);
+      setSelectedCardIds(Array.isArray(existingDeck.cards_json) ? existingDeck.cards_json : []);
     }
   }, [existingDeck]);
 
