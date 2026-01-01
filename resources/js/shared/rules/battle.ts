@@ -92,15 +92,15 @@ export const judgeBattle = (playerCard: Card, cpuCard: Card): JudgeResult => {
   }
   
   // handResult === 'LOSE'
-  const bonus = 30; // Win bonus
+  const bonus = 30; // Win bonus for CPU
   const extra = getElementExtra(cpuCard, playerCard);
-  const damage = calculateDamage(cpuCard, playerCard, -bonus); // Apply negative bonus for loss
+  const damage = calculateDamage(cpuCard, playerCard, bonus); // CPU wins, gets win bonus
   
   let elementInfo = '';
   if (extra > 0) {
-    elementInfo = ' (属性有利!)';
+    elementInfo = ' (相手が属性有利!)';
   } else if (extra < 0) {
-    elementInfo = ' (属性不利!)';
+    elementInfo = ' (相手が属性不利!)';
   }
   
   return {
