@@ -64,6 +64,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'message' => 'Not authenticated',
+            ], 401);
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
