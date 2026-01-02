@@ -169,7 +169,7 @@ const Deck: React.FC = () => {
                           </div>
                         )}
                         
-                        <div className="flex-1 flex flex-col justify-between">
+                        <div className="flex-1 flex flex-col justify-between min-w-0">
                           <div className="space-y-2 text-base">
                             <div className="text-green-600">HP: {leaderCard.hp}</div>
                             <div className="text-red-600">ATK: {leaderCard.atk}</div>
@@ -220,7 +220,7 @@ const Deck: React.FC = () => {
                                   画像なし
                                 </div>
                               )}
-                              <div className="flex-1 flex flex-col justify-between">
+                              <div className="flex-1 flex flex-col justify-between min-w-0">
                                 <div className="space-y-1 text-sm">
                                   <div className="text-green-600">HP: {card.hp}</div>
                                   <div className="text-red-600">ATK: {card.atk}</div>
