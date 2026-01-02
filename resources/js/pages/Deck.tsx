@@ -47,7 +47,7 @@ const Deck: React.FC = () => {
     // Count how many times this card is already in the deck
     const timesUsed = selectedCardIds.filter(id => id === card.id).length;
     
-    if (selectedCardIds.includes(card.id) && timesUsed > 0) {
+    if (timesUsed > 0) {
       // Remove one instance of the card
       const index = selectedCardIds.indexOf(card.id);
       setSelectedCardIds(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
