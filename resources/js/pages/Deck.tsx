@@ -56,9 +56,6 @@ const Deck: React.FC = () => {
       setSelectedCardIds(prev => [...prev, card.id]);
     }
   };
-      setSelectedCardIds(prev => [...prev, card.id]);
-    }
-  };
 
   const handleSave = async () => {
     if (!selectedLeaderCardId) {
