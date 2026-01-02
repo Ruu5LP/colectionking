@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Card } from '../types';
+import { UserCard } from '../types';
 import { useApi } from '../hooks/useApi';
 import CardGrid from '../components/CardGrid';
 
 const Collection: React.FC = () => {
-  const { data: cards, loading, error } = useApi<Card[]>('/api/cards');
+  const { data: cards, loading, error } = useApi<UserCard[]>('/api/user/cards');
   
   const [rarityFilter, setRarityFilter] = useState<number | 'ALL'>('ALL');
 
@@ -70,7 +70,7 @@ const Collection: React.FC = () => {
             </div>
 
             {filteredCards.length > 0 ? (
-              <CardGrid cards={filteredCards} />
+              <CardGrid cards={filteredCards} showQuantity={true} />
             ) : (
               <div className="text-center py-12 text-gray-500">
                 条件に一致するカードがありません

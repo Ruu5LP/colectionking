@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserCard;
+use App\Models\UserCollection;
 use App\Support\Elements;
 use Illuminate\Http\Request;
 
@@ -16,13 +16,13 @@ class UserCardController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $userCards = UserCard::with(['card.elements', 'elements'])
+        $userCollections = UserCollection::with(['card.elements', 'elements'])
             ->where('user_id', $user->id)
             ->get();
 
-        // Format user cards with elements as {fire:{base,cap,current}, ...}
-        $formattedCards = $userCards->map(function ($userCard) {
-            $card = $userCard->card;
+        // Format user collections with elements as {fire:{base,cap,current}, ...}
+        $formattedCards = $userCollections->map(function ($userCollection) {
+            $card = $userCollection->card;
             $cardArray = $card->toArray();
             
             // Initialize all elements with 0 values
@@ -37,15 +37,16 @@ class UserCardController extends Controller
                 $elements[$cardElement->element]['cap'] = $cardElement->cap;
             }
             
-            // Fill in current from user_card_elements
-            foreach ($userCard->elements as $userCardElement) {
-                if (isset($elements[$userCardElement->element])) {
-                    $elements[$userCardElement->element]['current'] = $userCardElement->current;
+            // Fill in current from user_collection_elements
+            foreach ($userCollection->elements as $userCollectionElement) {
+                if (isset($elements[$userCollectionElement->element])) {
+                    $elements[$userCollectionElement->element]['current'] = $userCollectionElement->current;
                 }
             }
             
             $cardArray['elements'] = $elements;
-            $cardArray['user_card_id'] = $userCard->id;
+            $cardArray['user_collection_id'] = $userCollection->id;
+            $cardArray['quantity'] = $userCollection->quantity;
             
             return $cardArray;
         });

@@ -1,5 +1,73 @@
 [
   {
+    "id": "STARTER001",
+    "name": "ルークス【スターター】",
+    "hp": 600,
+    "atk": 180,
+    "def": 180,
+    "rarity": 2,
+    "description": "スターターカード",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":5,"cap":5},
+      {"element":"water","base":3,"cap":3},
+      {"element":"wind","base":1,"cap":3},
+      {"element":"earth","base":1,"cap":3},
+      {"element":"mech","base":5,"cap":5}
+    ]
+  },
+  {
+    "id": "STARTER002",
+    "name": "アーヤ【スターター】",
+    "hp": 600,
+    "atk": 180,
+    "def": 170,
+    "rarity": 2,
+    "description": "スターターカード",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":2,"cap":3},
+      {"element":"water","base":5,"cap":5},
+      {"element":"wind","base":2,"cap":3},
+      {"element":"earth","base":2,"cap":3},
+      {"element":"mech","base":2,"cap":3}
+    ]
+  },
+  {
+    "id": "STARTER003",
+    "name": "見習い兵士【スターター】",
+    "hp": 500,
+    "atk": 150,
+    "def": 150,
+    "rarity": 1,
+    "description": "スターターカード",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":2,"cap":3},
+      {"element":"water","base":2,"cap":3},
+      {"element":"wind","base":5,"cap":5},
+      {"element":"earth","base":1,"cap":3},
+      {"element":"mech","base":2,"cap":3}
+    ]
+  },
+  {
+    "id": "STARTER004",
+    "name": "見習い魔術師【スターター】",
+    "hp": 500,
+    "atk": 150,
+    "def": 150,
+    "rarity": 1,
+    "description": "スターターカード",
+    "image_url": null,
+    "elements": [
+      {"element":"fire","base":2,"cap":3},
+      {"element":"water","base":1,"cap":3},
+      {"element":"wind","base":3,"cap":3},
+      {"element":"earth","base":5,"cap":5},
+      {"element":"mech","base":1,"cap":3}
+    ]
+  },
+  {
     "id": "C001",
     "name": "火炎の剣士",
     "hp": 1200,

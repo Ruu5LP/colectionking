@@ -32,7 +32,8 @@ export interface Card {
 }
 
 export interface UserCard extends Omit<Card, 'elements'> {
-  user_card_id: number;
+  user_collection_id: number;
+  quantity: number;
   elements: UserCardElements;
 }
 

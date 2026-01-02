@@ -1,16 +1,17 @@
 import React from 'react';
-import { Card } from '../types';
+import { Card, UserCard } from '../types';
 import ElementBar from './ElementBar';
 import RarityDisplay from './RarityDisplay';
 
 interface CardGridProps {
-  cards: Card[];
+  cards: (Card | UserCard)[];
   selectedCards?: string[];
-  onCardClick?: (card: Card) => void;
+  onCardClick?: (card: Card | UserCard) => void;
   maxSelection?: number;
+  showQuantity?: boolean;
 }
 
-const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardClick, maxSelection }) => {
+const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardClick, maxSelection, showQuantity = false }) => {
   const isSelected = (cardId: string) => selectedCards.includes(cardId);
   const canSelect = !maxSelection || selectedCards.length < maxSelection;
 
@@ -19,17 +20,24 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
       {cards.map((card) => {
         const selected = isSelected(card.id);
         const clickable = onCardClick && (canSelect || selected);
+        const quantity = 'quantity' in card ? card.quantity : undefined;
         
         return (
           <div
             key={card.id}
             onClick={() => clickable && onCardClick(card)}
             className={`
-              border-2 rounded-lg p-4 transition-all bg-white
+              border-2 rounded-lg p-4 transition-all bg-white relative
               ${selected ? 'ring-4 ring-blue-500 scale-105 border-blue-500' : 'border-gray-300'}
               ${clickable ? 'cursor-pointer hover:shadow-lg hover:border-blue-400' : 'cursor-default'}
             `}
           >
+            {showQuantity && quantity !== undefined && (
+              <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                ×{quantity}
+              </div>
+            )}
+            
             <div className="text-sm font-bold mb-2 truncate" title={card.name}>
               {card.name}
             </div>

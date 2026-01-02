@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\StarterCardService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,10 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
             'display_name' => $validated['display_name'],
         ]);
+
+        // Distribute starter cards to new user
+        $starterCardService = new StarterCardService();
+        $starterCardService->distributeStarterCards($user);
 
         Auth::login($user);
 
