@@ -29,10 +29,30 @@ class CardsJsonSeeder extends Seeder
             return;
         }
 
+        // Get available images from public/images directory
+        $imagesPath = public_path('images');
+        $availableImages = [];
+        
+        if (File::exists($imagesPath)) {
+            $imageFiles = File::files($imagesPath);
+            foreach ($imageFiles as $imageFile) {
+                $filename = $imageFile->getFilename();
+                // Extract card ID from filename (e.g., C001.svg -> C001)
+                $cardId = pathinfo($filename, PATHINFO_FILENAME);
+                $availableImages[$cardId] = '/images/' . $filename;
+            }
+        }
+
         foreach ($cardsData as $cardData) {
             // Extract elements data before creating/updating card
             $elements = $cardData['elements'] ?? [];
             unset($cardData['elements']);
+
+            // Determine image URL: use from JSON if provided, otherwise try to find matching image
+            $imageUrl = $cardData['image_url'] ?? null;
+            if (empty($imageUrl) && isset($availableImages[$cardData['id']])) {
+                $imageUrl = $availableImages[$cardData['id']];
+            }
 
             // Create or update card
             $card = Card::updateOrCreate(
@@ -44,7 +64,7 @@ class CardsJsonSeeder extends Seeder
                     'def' => $cardData['def'],
                     'rarity' => $cardData['rarity'],
                     'description' => $cardData['description'] ?? null,
-                    'image_url' => $cardData['image_url'] ?? null,
+                    'image_url' => $imageUrl,
                 ]
             );
 
