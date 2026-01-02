@@ -170,10 +170,10 @@ const Deck: React.FC = () => {
                         <img 
                           src={leaderCard.image_url!} 
                           alt={leaderCard.name}
-                          className="w-full h-32 object-cover rounded mb-2"
+                          className="w-[249px] h-[380px] object-cover rounded mb-2 mx-auto"
                         />
                       ) : (
-                        <div className="w-full h-32 bg-gray-200 rounded mb-2 flex items-center justify-center text-gray-400 text-xs">
+                        <div className="w-[249px] h-[380px] bg-gray-200 rounded mb-2 flex items-center justify-center text-gray-400 text-sm mx-auto">
                           画像なし
                         </div>
                       )}
@@ -220,10 +220,10 @@ const Deck: React.FC = () => {
                               <img 
                                 src={card.image_url!} 
                                 alt={card.name}
-                                className="w-full h-20 object-cover rounded mb-1"
+                                className="w-[249px] h-[380px] object-cover rounded mb-1 mx-auto"
                               />
                             ) : (
-                              <div className="w-full h-20 bg-gray-200 rounded mb-1 flex items-center justify-center text-gray-400 text-xs">
+                              <div className="w-[249px] h-[380px] bg-gray-200 rounded mb-1 flex items-center justify-center text-gray-400 text-sm mx-auto">
                                 画像なし
                               </div>
                             )}

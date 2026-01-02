@@ -1,7 +1,17 @@
 import React from 'react';
 import { Card } from '../types';
 import ElementBar from './ElementBar';
-import RarityDisplay from './RarityDisplay';
+
+// Helper function to validate image URL
+const isValidImageUrl = (url: string | null | undefined): boolean => {
+  if (!url) return false;
+  try {
+    const urlObj = new URL(url, window.location.origin);
+    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
 
 interface CardGridProps {
   cards: Card[];
@@ -34,7 +44,17 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
               {card.name}
             </div>
             
-            <RarityDisplay rarity={card.rarity} className="mb-2" />
+            {isValidImageUrl(card.image_url) ? (
+              <img 
+                src={card.image_url!} 
+                alt={card.name}
+                className="w-[249px] h-[380px] object-cover rounded mb-2 mx-auto"
+              />
+            ) : (
+              <div className="w-[249px] h-[380px] bg-gray-200 rounded mb-2 flex items-center justify-center text-gray-400 text-sm mx-auto">
+                画像なし
+              </div>
+            )}
             
             <div className="flex items-center justify-between text-sm mb-3">
               <div className="text-left space-y-1">
