@@ -5,17 +5,7 @@ import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
 import CardGrid from '../components/CardGrid';
 import ElementBar from '../components/ElementBar';
-
-// Helper function to validate image URL
-const isValidImageUrl = (url: string | null | undefined): boolean => {
-  if (!url) return false;
-  try {
-    const urlObj = new URL(url, window.location.origin);
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-  } catch {
-    return false;
-  }
-};
+import { isValidImageUrl } from '../shared/utils';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();

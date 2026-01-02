@@ -1,17 +1,7 @@
 import React from 'react';
 import { Card } from '../types';
 import ElementBar from './ElementBar';
-
-// Helper function to validate image URL
-const isValidImageUrl = (url: string | null | undefined): boolean => {
-  if (!url) return false;
-  try {
-    const urlObj = new URL(url, window.location.origin);
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-  } catch {
-    return false;
-  }
-};
+import { isValidImageUrl } from '../shared/utils';
 
 interface CardGridProps {
   cards: Card[];
