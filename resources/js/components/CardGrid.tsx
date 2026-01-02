@@ -34,7 +34,7 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
               {card.name}
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {isValidImageUrl(card.image_url) ? (
                 <img 
                   src={card.image_url!} 
@@ -47,7 +47,7 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
                 </div>
               )}
               
-              <div className="flex-1 flex flex-col justify-between">
+              <div className="flex-1 flex flex-col justify-between min-w-0">
                 <div className="space-y-1 text-sm">
                   <div className="text-green-600">HP: {card.hp}</div>
                   <div className="text-red-600">ATK: {card.atk}</div>
