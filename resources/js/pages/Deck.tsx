@@ -223,7 +223,7 @@ const Deck: React.FC = () => {
                                 className="w-full aspect-[249/380] object-cover rounded mb-1"
                               />
                             ) : (
-                              <div className="w-full aspect-[249/380] bg-gray-200 rounded mb-1 flex items-center justify-center text-gray-400 text-xs">
+                              <div className="w-full aspect-[249/380] bg-gray-200 rounded mb-1 flex items-center justify-center text-gray-400 text-sm">
                                 画像なし
                               </div>
                             )}
