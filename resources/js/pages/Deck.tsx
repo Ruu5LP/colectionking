@@ -5,7 +5,6 @@ import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
 import CardGrid from '../components/CardGrid';
 import ElementBar from '../components/ElementBar';
-import RarityDisplay from '../components/RarityDisplay';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -156,7 +155,17 @@ const Deck: React.FC = () => {
                         {leaderCard.name}
                       </div>
                       
-                      <RarityDisplay rarity={leaderCard.rarity} className="mb-2" />
+                      {leaderCard.image_url ? (
+                        <img 
+                          src={leaderCard.image_url} 
+                          alt={leaderCard.name}
+                          className="w-full h-32 object-cover rounded mb-2"
+                        />
+                      ) : (
+                        <div className="w-full h-32 bg-gray-200 rounded mb-2 flex items-center justify-center text-gray-400 text-xs">
+                          画像なし
+                        </div>
+                      )}
                       
                       <div className="flex items-center justify-between text-xs mb-2">
                         <div className="text-left space-y-1">
@@ -196,7 +205,17 @@ const Deck: React.FC = () => {
                             <div className="text-xs font-bold mb-1 truncate" title={card.name}>
                               {card.name}
                             </div>
-                            <RarityDisplay rarity={card.rarity} className="mb-1 scale-75 origin-left" />
+                            {card.image_url ? (
+                              <img 
+                                src={card.image_url} 
+                                alt={card.name}
+                                className="w-full h-20 object-cover rounded mb-1"
+                              />
+                            ) : (
+                              <div className="w-full h-20 bg-gray-200 rounded mb-1 flex items-center justify-center text-gray-400 text-xs">
+                                画像なし
+                              </div>
+                            )}
                             <div className="text-xs space-y-0.5">
                               <div className="text-green-600">HP: {card.hp}</div>
                               <div className="text-red-600">ATK: {card.atk}</div>
