@@ -47,13 +47,14 @@ const Deck: React.FC = () => {
     // Count how many times this card is already in the deck
     const timesUsed = selectedCardIds.filter(id => id === card.id).length;
     
-    if (timesUsed > 0) {
-      // Remove one instance of the card
+    // Check if we can add more copies
+    if (timesUsed < card.quantity && selectedCardIds.length < MAX_CARDS) {
+      // Add card if under both quantity limit and deck limit
+      setSelectedCardIds(prev => [...prev, card.id]);
+    } else if (timesUsed > 0) {
+      // If already at limit, clicking removes one instance
       const index = selectedCardIds.indexOf(card.id);
       setSelectedCardIds(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
-    } else if (selectedCardIds.length < MAX_CARDS && timesUsed < card.quantity) {
-      // Add card if under deck limit and under quantity limit
-      setSelectedCardIds(prev => [...prev, card.id]);
     }
   };
 
