@@ -20,9 +20,13 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {cards.map((card) => {
         const selected = isSelected(card.id);
-        const clickable = onCardClick && (canSelect || selected);
         const quantity = 'quantity' in card ? card.quantity : undefined;
         const timesUsed = getTimesUsed(card.id);
+        
+        // Determine if card can be added or will be removed
+        const canAdd = quantity !== undefined ? (timesUsed < quantity && canSelect) : canSelect;
+        const willRemove = timesUsed > 0 && !canAdd;
+        const clickable = onCardClick && (canAdd || willRemove);
         
         return (
           <div
@@ -43,6 +47,15 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
             {!showQuantity && quantity !== undefined && timesUsed > 0 && (
               <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                 {timesUsed}/{quantity}
+              </div>
+            )}
+            
+            {/* Add/Remove indicator */}
+            {!showQuantity && clickable && (
+              <div className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded-full ${
+                canAdd ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+              }`}>
+                {canAdd ? '+追加' : '−削除'}
               </div>
             )}
             

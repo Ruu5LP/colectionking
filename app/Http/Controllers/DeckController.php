@@ -42,11 +42,12 @@ class DeckController extends Controller
             ], 422);
         }
 
-        // Validate all cards exist
+        // Validate all cards exist (get unique card IDs)
         $cardIds = $request->cards;
-        $cards = Card::whereIn('id', $cardIds)->get();
+        $uniqueCardIds = array_unique($cardIds);
+        $cards = Card::whereIn('id', $uniqueCardIds)->get();
         
-        if ($cards->count() !== 10) {
+        if ($cards->count() !== count($uniqueCardIds)) {
             return response()->json([
                 'errors' => ['cards' => ['One or more card IDs are invalid.']]
             ], 422);
