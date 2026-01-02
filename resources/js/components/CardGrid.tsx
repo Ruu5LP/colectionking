@@ -30,25 +30,25 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
               ${clickable ? 'cursor-pointer hover:shadow-lg hover:border-blue-400' : 'cursor-default'}
             `}
           >
-            <div className="text-sm font-bold mb-2 truncate" title={card.name}>
+            <div className="text-sm font-bold mb-3 truncate" title={card.name}>
               {card.name}
             </div>
             
-            <div className="flex gap-4">
+            <div className="flex flex-col items-center">
               {isValidImageUrl(card.image_url) ? (
                 <img 
                   src={card.image_url!} 
                   alt={card.name}
-                  className="w-24 aspect-[249/380] object-cover rounded flex-shrink-0"
+                  className="w-full aspect-[249/380] object-cover rounded mb-3"
                 />
               ) : (
-                <div className="w-24 aspect-[249/380] bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                <div className="w-full aspect-[249/380] bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs mb-3">
                   画像なし
                 </div>
               )}
               
-              <div className="flex-1 flex flex-col justify-between min-w-0">
-                <div className="space-y-1 text-sm">
+              <div className="w-full">
+                <div className="space-y-1 text-sm mb-2">
                   <div className="text-green-600">HP: {card.hp}</div>
                   <div className="text-red-600">ATK: {card.atk}</div>
                   <div className="text-blue-600">DEF: {card.def}</div>
