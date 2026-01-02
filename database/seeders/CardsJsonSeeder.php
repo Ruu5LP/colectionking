@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\File;
 class CardsJsonSeeder extends Seeder
 {
     /**
+     * Supported image file extensions for card images
+     */
+    private const SUPPORTED_IMAGE_EXTENSIONS = ['svg', 'png', 'jpg', 'jpeg', 'gif'];
+
+    /**
      * Run the database seeds.
      */
     public function run(): void
@@ -38,9 +43,14 @@ class CardsJsonSeeder extends Seeder
             $imageFiles = File::files($imagesPath);
             foreach ($imageFiles as $imageFile) {
                 $filename = $imageFile->getFilename();
-                // Extract card ID from filename (e.g., C001.svg -> C001)
-                $cardId = pathinfo($filename, PATHINFO_FILENAME);
-                $availableImages[$cardId] = '/images/'.$filename;
+                $extension = strtolower($imageFile->getExtension());
+
+                // Only process files with supported image extensions
+                if (in_array($extension, self::SUPPORTED_IMAGE_EXTENSIONS)) {
+                    // Extract card ID from filename (e.g., C001.svg -> C001)
+                    $cardId = pathinfo($filename, PATHINFO_FILENAME);
+                    $availableImages[$cardId] = '/images/'.$filename;
+                }
             }
         }
 
@@ -51,7 +61,7 @@ class CardsJsonSeeder extends Seeder
 
             // Determine image URL: use from JSON if provided, otherwise try to find matching image
             $imageUrl = $cardData['image_url'] ?? null;
-            if (empty($imageUrl) && isset($availableImages[$cardData['id']])) {
+            if ($imageUrl === null && isset($availableImages[$cardData['id']])) {
                 $imageUrl = $availableImages[$cardData['id']];
             }
 

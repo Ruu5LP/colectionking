@@ -23,13 +23,16 @@ class CardsJsonSeederTest extends TestCase
         // Assert that we have cards
         $this->assertGreaterThan(0, $cards->count());
 
+        // Use reflection to access the private constant from the seeder
+        $reflection = new \ReflectionClass(CardsJsonSeeder::class);
+        $supportedExtensions = $reflection->getConstant('SUPPORTED_IMAGE_EXTENSIONS');
+
         // Check that cards have image URLs assigned
         foreach ($cards as $card) {
             // If an image file exists for this card ID, it should have an image URL
-            $possibleExtensions = ['svg', 'png', 'jpg', 'jpeg', 'gif'];
             $hasImageFile = false;
 
-            foreach ($possibleExtensions as $ext) {
+            foreach ($supportedExtensions as $ext) {
                 $imagePath = public_path("images/{$card->id}.{$ext}");
                 if (File::exists($imagePath)) {
                     $hasImageFile = true;
