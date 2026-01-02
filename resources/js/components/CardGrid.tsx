@@ -45,7 +45,7 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
             )}
             
             {!showQuantity && quantity !== undefined && timesUsed > 0 && (
-              <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
                 {timesUsed}/{quantity}
               </div>
             )}
@@ -53,9 +53,9 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
             {/* Add/Remove indicator */}
             {!showQuantity && clickable && (
               <div className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded-full ${
-                canAdd ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                canAdd ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'
               }`}>
-                {canAdd ? '+追加' : '−削除'}
+                {canAdd ? '+ 追加' : '− 削除'}
               </div>
             )}
             
