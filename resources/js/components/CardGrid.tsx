@@ -14,6 +14,7 @@ interface CardGridProps {
 const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardClick, maxSelection, showQuantity = false }) => {
   const isSelected = (cardId: string) => selectedCards.includes(cardId);
   const canSelect = !maxSelection || selectedCards.length < maxSelection;
+  const getTimesUsed = (cardId: string) => selectedCards.filter(id => id === cardId).length;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -21,6 +22,7 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
         const selected = isSelected(card.id);
         const clickable = onCardClick && (canSelect || selected);
         const quantity = 'quantity' in card ? card.quantity : undefined;
+        const timesUsed = getTimesUsed(card.id);
         
         return (
           <div
@@ -35,6 +37,12 @@ const CardGrid: React.FC<CardGridProps> = ({ cards, selectedCards = [], onCardCl
             {showQuantity && quantity !== undefined && (
               <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                 ×{quantity}
+              </div>
+            )}
+            
+            {!showQuantity && quantity !== undefined && timesUsed > 0 && (
+              <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                {timesUsed}/{quantity}
               </div>
             )}
             

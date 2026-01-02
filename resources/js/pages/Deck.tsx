@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, Deck as DeckType } from '../types';
+import { UserCard, Deck as DeckType } from '../types';
 import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
 import CardGrid from '../components/CardGrid';
@@ -11,7 +11,7 @@ const Deck: React.FC = () => {
   const navigate = useNavigate();
   const userId = useUserId();
   
-  const { data: cards, loading: cardsLoading } = useApi<Card[]>('/api/cards');
+  const { data: cards, loading: cardsLoading } = useApi<UserCard[]>('/api/user/cards');
   const { data: existingDeck } = useApi<DeckType | null>(`/api/decks/${userId}`);
   
   const [selectedLeaderCardId, setSelectedLeaderCardId] = useState<string | null>(null);
@@ -35,19 +35,27 @@ const Deck: React.FC = () => {
     }
   }, [existingDeck]);
 
-  const handleLeaderSelect = (card: Card) => {
+  const handleLeaderSelect = (card: UserCard) => {
     setSelectedLeaderCardId(card.id);
     setMode('deck');
     setSuccess(false);
   };
 
-  const handleCardSelect = (card: Card) => {
+  const handleCardSelect = (card: UserCard) => {
     setSuccess(false);
-    if (selectedCardIds.includes(card.id)) {
-      // Remove card if already selected
-      setSelectedCardIds(prev => prev.filter(id => id !== card.id));
-    } else if (selectedCardIds.length < MAX_CARDS) {
-      // Add card if under limit
+    
+    // Count how many times this card is already in the deck
+    const timesUsed = selectedCardIds.filter(id => id === card.id).length;
+    
+    if (selectedCardIds.includes(card.id) && timesUsed > 0) {
+      // Remove one instance of the card
+      const index = selectedCardIds.indexOf(card.id);
+      setSelectedCardIds(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+    } else if (selectedCardIds.length < MAX_CARDS && timesUsed < card.quantity) {
+      // Add card if under deck limit and under quantity limit
+      setSelectedCardIds(prev => [...prev, card.id]);
+    }
+  };
       setSelectedCardIds(prev => [...prev, card.id]);
     }
   };
@@ -86,7 +94,12 @@ const Deck: React.FC = () => {
   const canSave = selectedLeaderCardId && selectedCardIds.length === MAX_CARDS && !saving;
   
   const leaderCard = cards?.find(c => c.id === selectedLeaderCardId);
-  const selectedCards = cards?.filter(c => selectedCardIds.includes(c.id)) || [];
+  
+  // Build selected cards array preserving duplicates
+  const selectedCards = selectedCardIds.map((cardId, index) => {
+    const card = cards?.find(c => c.id === cardId);
+    return card ? { ...card, _deckIndex: index } : null;
+  }).filter(Boolean) as (UserCard & { _deckIndex: number })[];
   
   // Filter cards based on search term
   const filteredCards = cards?.filter(card => 
@@ -184,13 +197,13 @@ const Deck: React.FC = () => {
                   {/* Selected Deck Cards Section */}
                   <div className="lg:col-span-2">
                     <h3 className="text-lg font-semibold mb-3">
-                      選択中のデッキ ({selectedCards.length}/{MAX_CARDS})
+                      選択中のデッキ ({selectedCardIds.length}/{MAX_CARDS})
                     </h3>
                     {selectedCards.length > 0 ? (
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                         {selectedCards.map((card) => (
                           <div
-                            key={card.id}
+                            key={card._deckIndex}
                             className="border-2 rounded-lg p-2 transition-all bg-white border-green-500 ring-1 ring-green-500"
                           >
                             <div className="text-xs font-bold mb-1 truncate" title={card.name}>
