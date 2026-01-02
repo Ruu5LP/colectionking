@@ -5,7 +5,7 @@ import { useApi, apiPost } from '../hooks/useApi';
 import { useUserId } from '../hooks/useUserId';
 import CardGrid from '../components/CardGrid';
 import ElementBar from '../components/ElementBar';
-import RarityDisplay from '../components/RarityDisplay';
+import { isValidImageUrl } from '../shared/utils';
 
 const Deck: React.FC = () => {
   const navigate = useNavigate();
@@ -151,23 +151,35 @@ const Deck: React.FC = () => {
                   {/* Leader Card Section */}
                   <div>
                     <h3 className="text-lg font-semibold mb-3">選択中のリーダー</h3>
-                    <div className="border-2 rounded-lg p-3 transition-all bg-white border-blue-500 ring-2 ring-blue-500">
-                      <div className="text-sm font-bold mb-2 truncate" title={leaderCard.name}>
+                    <div className="border-2 rounded-lg p-4 transition-all bg-white border-blue-500 ring-2 ring-blue-500">
+                      <div className="text-base font-bold mb-3 truncate" title={leaderCard.name}>
                         {leaderCard.name}
                       </div>
                       
-                      <RarityDisplay rarity={leaderCard.rarity} className="mb-2" />
-                      
-                      <div className="flex items-center justify-between text-xs mb-2">
-                        <div className="text-left space-y-1">
-                          <div className="text-green-600">HP: {leaderCard.hp}</div>
-                          <div className="text-red-600">ATK: {leaderCard.atk}</div>
-                          <div className="text-blue-600">DEF: {leaderCard.def}</div>
+                      <div className="flex gap-4">
+                        {isValidImageUrl(leaderCard.image_url) ? (
+                          <img 
+                            src={leaderCard.image_url!} 
+                            alt={leaderCard.name}
+                            className="w-32 aspect-[249/380] object-cover rounded flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-32 aspect-[249/380] bg-gray-200 rounded flex items-center justify-center text-gray-400 text-sm flex-shrink-0">
+                            画像なし
+                          </div>
+                        )}
+                        
+                        <div className="flex-1 flex flex-col justify-between min-w-0">
+                          <div className="space-y-2 text-base">
+                            <div className="text-green-600">HP: {leaderCard.hp}</div>
+                            <div className="text-red-600">ATK: {leaderCard.atk}</div>
+                            <div className="text-blue-600">DEF: {leaderCard.def}</div>
+                          </div>
+                          
+                          <div className="mt-3">
+                            <ElementBar elements={leaderCard.elements} />
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="mt-2">
-                        <ElementBar elements={leaderCard.elements} />
                       </div>
                     </div>
                     <button
@@ -187,20 +199,34 @@ const Deck: React.FC = () => {
                       選択中のデッキ ({selectedCards.length}/{MAX_CARDS})
                     </h3>
                     {selectedCards.length > 0 ? (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {selectedCards.map((card) => (
                           <div
                             key={card.id}
-                            className="border-2 rounded-lg p-2 transition-all bg-white border-green-500 ring-1 ring-green-500"
+                            className="border-2 rounded-lg p-3 transition-all bg-white border-green-500 ring-1 ring-green-500"
                           >
-                            <div className="text-xs font-bold mb-1 truncate" title={card.name}>
+                            <div className="text-sm font-bold mb-2 truncate" title={card.name}>
                               {card.name}
                             </div>
-                            <RarityDisplay rarity={card.rarity} className="mb-1 scale-75 origin-left" />
-                            <div className="text-xs space-y-0.5">
-                              <div className="text-green-600">HP: {card.hp}</div>
-                              <div className="text-red-600">ATK: {card.atk}</div>
-                              <div className="text-blue-600">DEF: {card.def}</div>
+                            <div className="flex gap-3">
+                              {isValidImageUrl(card.image_url) ? (
+                                <img 
+                                  src={card.image_url!} 
+                                  alt={card.name}
+                                  className="w-24 aspect-[249/380] object-cover rounded flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-24 aspect-[249/380] bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                                  画像なし
+                                </div>
+                              )}
+                              <div className="flex-1 flex flex-col justify-between min-w-0">
+                                <div className="space-y-1 text-sm">
+                                  <div className="text-green-600">HP: {card.hp}</div>
+                                  <div className="text-red-600">ATK: {card.atk}</div>
+                                  <div className="text-blue-600">DEF: {card.def}</div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         ))}
