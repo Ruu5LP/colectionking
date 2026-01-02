@@ -6,6 +6,17 @@ import { useUserId } from '../hooks/useUserId';
 import CardGrid from '../components/CardGrid';
 import ElementBar from '../components/ElementBar';
 
+// Helper function to validate image URL
+const isValidImageUrl = (url: string | null | undefined): boolean => {
+  if (!url) return false;
+  try {
+    const urlObj = new URL(url, window.location.origin);
+    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
 const Deck: React.FC = () => {
   const navigate = useNavigate();
   const userId = useUserId();
@@ -155,9 +166,9 @@ const Deck: React.FC = () => {
                         {leaderCard.name}
                       </div>
                       
-                      {leaderCard.image_url ? (
+                      {isValidImageUrl(leaderCard.image_url) ? (
                         <img 
-                          src={leaderCard.image_url} 
+                          src={leaderCard.image_url!} 
                           alt={leaderCard.name}
                           className="w-full h-32 object-cover rounded mb-2"
                         />
@@ -205,9 +216,9 @@ const Deck: React.FC = () => {
                             <div className="text-xs font-bold mb-1 truncate" title={card.name}>
                               {card.name}
                             </div>
-                            {card.image_url ? (
+                            {isValidImageUrl(card.image_url) ? (
                               <img 
-                                src={card.image_url} 
+                                src={card.image_url!} 
                                 alt={card.name}
                                 className="w-full h-20 object-cover rounded mb-1"
                               />
