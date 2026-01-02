@@ -166,28 +166,30 @@ const Deck: React.FC = () => {
                         {leaderCard.name}
                       </div>
                       
-                      {isValidImageUrl(leaderCard.image_url) ? (
-                        <img 
-                          src={leaderCard.image_url!} 
-                          alt={leaderCard.name}
-                          className="w-full aspect-[249/380] object-cover rounded mb-2"
-                        />
-                      ) : (
-                        <div className="w-full aspect-[249/380] bg-gray-200 rounded mb-2 flex items-center justify-center text-gray-400 text-sm">
-                          画像なし
+                      <div className="flex gap-3">
+                        {isValidImageUrl(leaderCard.image_url) ? (
+                          <img 
+                            src={leaderCard.image_url!} 
+                            alt={leaderCard.name}
+                            className="w-24 aspect-[249/380] object-cover rounded flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-24 aspect-[249/380] bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                            画像なし
+                          </div>
+                        )}
+                        
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div className="space-y-1 text-sm">
+                            <div className="text-green-600">HP: {leaderCard.hp}</div>
+                            <div className="text-red-600">ATK: {leaderCard.atk}</div>
+                            <div className="text-blue-600">DEF: {leaderCard.def}</div>
+                          </div>
+                          
+                          <div className="mt-2">
+                            <ElementBar elements={leaderCard.elements} />
+                          </div>
                         </div>
-                      )}
-                      
-                      <div className="flex items-center justify-between text-xs mb-2">
-                        <div className="text-left space-y-1">
-                          <div className="text-green-600">HP: {leaderCard.hp}</div>
-                          <div className="text-red-600">ATK: {leaderCard.atk}</div>
-                          <div className="text-blue-600">DEF: {leaderCard.def}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-2">
-                        <ElementBar elements={leaderCard.elements} />
                       </div>
                     </div>
                     <button
@@ -207,7 +209,7 @@ const Deck: React.FC = () => {
                       選択中のデッキ ({selectedCards.length}/{MAX_CARDS})
                     </h3>
                     {selectedCards.length > 0 ? (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {selectedCards.map((card) => (
                           <div
                             key={card.id}
@@ -216,21 +218,23 @@ const Deck: React.FC = () => {
                             <div className="text-xs font-bold mb-1 truncate" title={card.name}>
                               {card.name}
                             </div>
-                            {isValidImageUrl(card.image_url) ? (
-                              <img 
-                                src={card.image_url!} 
-                                alt={card.name}
-                                className="w-full aspect-[249/380] object-cover rounded mb-1"
-                              />
-                            ) : (
-                              <div className="w-full aspect-[249/380] bg-gray-200 rounded mb-1 flex items-center justify-center text-gray-400 text-sm">
-                                画像なし
+                            <div className="flex gap-2">
+                              {isValidImageUrl(card.image_url) ? (
+                                <img 
+                                  src={card.image_url!} 
+                                  alt={card.name}
+                                  className="w-16 aspect-[249/380] object-cover rounded flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-16 aspect-[249/380] bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                                  画像なし
+                                </div>
+                              )}
+                              <div className="flex-1 flex flex-col justify-center space-y-0.5 text-xs">
+                                <div className="text-green-600">HP: {card.hp}</div>
+                                <div className="text-red-600">ATK: {card.atk}</div>
+                                <div className="text-blue-600">DEF: {card.def}</div>
                               </div>
-                            )}
-                            <div className="text-xs space-y-0.5">
-                              <div className="text-green-600">HP: {card.hp}</div>
-                              <div className="text-red-600">ATK: {card.atk}</div>
-                              <div className="text-blue-600">DEF: {card.def}</div>
                             </div>
                           </div>
                         ))}
